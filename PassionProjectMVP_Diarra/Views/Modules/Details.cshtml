@@ -1,0 +1,58 @@
+﻿@model PassionProjectMVP_Diarra.Models.Module
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Module</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Classe.className)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Classe.className)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.moduleName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.moduleName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.delivery)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.delivery)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fees)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fees)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.modId }) |
+    @Html.ActionLink("Back to Module List", "ModuleList")
+</p>

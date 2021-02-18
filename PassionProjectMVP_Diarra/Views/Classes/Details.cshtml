@@ -1,0 +1,68 @@
+﻿@model PassionProjectMVP_Diarra.Models.ModelViews.ShowClasse
+@*@model PassionProjectMVP_Diarra.Models.Classe*@
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Classe</h4>
+    <hr />
+    <table class="table">
+        <tr>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => model.classe.className)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.classe.startDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.classe.endDate)
+            </th>
+        </tr>
+        <tr>
+            <td colspan="2">
+                @Html.DisplayFor(model => model.classe.className)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.classe.startDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.classe.endDate)
+            </td>
+
+        </tr>
+        </table>
+       
+            <ul >
+                List of modules
+            
+                    @foreach (var module in Model.allModules)
+                    {
+                        var temp = @Html.DisplayFor(modelItem => module.moduleName).ToHtmlString();
+                        <li>
+                            @Html.ActionLink(temp, "Index", "Modules/Details/" + module.modId)
+                        </li>
+                    }
+            </ul>
+            <ul>
+                    List of students
+               
+                    @foreach (var pupil in Model.allPupils)
+                    {
+                        var temp = @Html.DisplayFor(modelItem => pupil.firstName).ToHtmlString() + " " + @Html.DisplayFor(modelItem => pupil.lastName).ToHtmlString();
+                        <li>
+                            @Html.ActionLink(temp, "Index", "Pupils/Details/" + pupil.pId)
+                        </li>
+                    }
+            </ul>
+          
+
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.classe.classId }) |
+    @Html.ActionLink("Back to Classe List", "ClasseList")
+</p>

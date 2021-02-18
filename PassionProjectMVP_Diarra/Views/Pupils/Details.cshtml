@@ -1,0 +1,65 @@
+﻿@model PassionProjectMVP_Diarra.Models.Pupil
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Pupil</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Classe.className)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Classe.className)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location.city)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location.city)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Location.country)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location.country)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.firstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.lastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.lastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.age)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.age)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.pId }) |
+    @Html.ActionLink("Back to Pupil List", "PupilList")
+</p>

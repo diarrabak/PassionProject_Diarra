@@ -1,0 +1,48 @@
+﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.Location>
+
+@{
+    ViewBag.Title = "LocationList";
+}
+
+<h2>Location List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.city)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.incomeRange)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.city)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.country)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.incomeRange)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.locId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.locId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.locId })
+        </td>
+    </tr>
+}
+
+</table>
+<p>
+    @Html.ActionLink("Back to Pupil List","Index", "Pupils/PupilList")
+</p>

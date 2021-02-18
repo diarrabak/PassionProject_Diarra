@@ -1,0 +1,64 @@
+﻿@model PassionProjectMVP_Diarra.Models.Module
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Module</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Classe.className)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Classe.className)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.moduleName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.moduleName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.delivery)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.delivery)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fees)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fees)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to Module List", "ModuleList")
+        </div>
+    }
+</div>

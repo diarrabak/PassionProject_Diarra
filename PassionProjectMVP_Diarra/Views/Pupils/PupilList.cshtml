@@ -1,0 +1,69 @@
+﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.Pupil>
+
+@{
+    ViewBag.Title = "PupilList";
+}
+
+<h2>Pupil List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.firstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.lastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.age)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Classe.className)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Location.city)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Location.country)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    var temp = @Html.DisplayFor(modelItem => item.Classe.className).ToHtmlString();
+    var tempCountry= @Html.DisplayFor(modelItem => item.Location.country).ToHtmlString();
+<tr>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.firstName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.lastName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.age)
+    </td>
+    <td>
+        @Html.ActionLink(temp, "Index", "Classes/Details/" + item.Classe.classId)
+        @*@Html.DisplayFor(modelItem => item.Classe.className)*@
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Location.city)
+    </td>
+    <td>
+        @*@Html.DisplayFor(modelItem => item.Location.country)*@
+        @Html.ActionLink(tempCountry, "Index", "Locations/Details/" + item.Location.locId)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.pId }) |
+        @Html.ActionLink("Details", "Details", new { id = item.pId }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.pId })
+    </td>
+</tr>
+}
+
+</table>
