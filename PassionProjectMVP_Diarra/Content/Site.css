@@ -22,3 +22,12 @@ select,
 textarea {
     max-width: 280px;
 }
+li {
+    margin-left:25px;
+}
+ul {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    margin-left: -30px;
+    font-size: 1.1em;
+}

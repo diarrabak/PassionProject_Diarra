@@ -204,6 +204,10 @@
     <Compile Include="Migrations\202102180149394_MVPwithdate.Designer.cs">
       <DependentUpon>202102180149394_MVPwithdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102190007532_PassionMVPGit_Diarra.cs" />
+    <Compile Include="Migrations\202102190007532_PassionMVPGit_Diarra.Designer.cs">
+      <DependentUpon>202102190007532_PassionMVPGit_Diarra.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Classe.cs" />
@@ -320,6 +324,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102180149394_MVPwithdate.resx">
       <DependentUpon>202102180149394_MVPwithdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102190007532_PassionMVPGit_Diarra.resx">
+      <DependentUpon>202102190007532_PassionMVPGit_Diarra.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
