@@ -14,7 +14,9 @@ namespace PassionProjectMVP_Diarra.Models
 {
     public class ModulesController : Controller
     {
-         private PassionDataContext db = new PassionDataContext();
+        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
+
+        private PassionDataContext db = new PassionDataContext();
 
         /*All the controllers can be automatically generated from:
         Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->

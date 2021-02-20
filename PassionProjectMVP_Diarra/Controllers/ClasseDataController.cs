@@ -14,6 +14,8 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class ClasseDataController : ApiController
     {
+        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
+
         //This variable is our database access point
         private PassionDataContext db = new PassionDataContext();
 

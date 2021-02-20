@@ -12,6 +12,7 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class PupilsController : Controller
     {
+        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
         private PassionDataContext db = new PassionDataContext();
 
 

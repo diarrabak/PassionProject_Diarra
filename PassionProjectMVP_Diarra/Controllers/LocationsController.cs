@@ -14,6 +14,8 @@ namespace PassionProjectMVP_Diarra.Models
 {
     public class LocationsController : Controller
     {
+        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
+
         // private PassionDataContext db = new PassionDataContext();
 
         /*All the controllers can be automatically generated from:
