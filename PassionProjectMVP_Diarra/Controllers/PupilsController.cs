@@ -14,6 +14,12 @@ namespace PassionProjectMVP_Diarra.Controllers
     {
         private PassionDataContext db = new PassionDataContext();
 
+
+        /// <summary>
+        /// This method displays the pupil list to the view
+        /// <example>Pupils/PupilList</example>
+        /// </summary>
+        /// <returns></returns>
         // GET: Pupils
         public ActionResult PupilList()
         {
@@ -21,7 +27,13 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(pupils.ToList());
         }
 
-        // GET: Pupils/Details/5
+        /// <summary>
+        /// <example>GET: Pupils/Details/5</example>
+        /// <example>GET: Pupils/Details/1</example>
+        /// </summary>
+        /// <param name="id">Id of the selected pupil</param>
+        /// <returns>Shows information about the pupil</returns>
+        // 
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -44,7 +56,13 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View();
         }
 
-        // POST: Pupils/Create
+        /// <summary>
+        /// This method creates and adds a new pupil to the database
+        /// <example>POST: Pupils/Create</example>
+        /// </summary>
+        /// <param name="pupil">Selected pupil</param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -63,7 +81,14 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(pupil);
         }
 
-        // GET: Pupils/Edit/5
+        /// <summary>
+        /// This method shows the pupil which ID is provided
+        /// <example>GET: Pupils/Edit/5</example>
+        /// <example>GET: Pupils/Edit/1</example>
+        /// </summary>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>Shows the selected information</returns>
+        // 
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -80,7 +105,14 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(pupil);
         }
 
-        // POST: Pupils/Edit/5
+        /// <summary>
+        /// This method permits to edit and save the selected pupil
+        /// <example>POST: Pupils/Edit/5</example>
+        /// <example>POST: Pupils/Edit/4</example>
+        /// </summary>
+        /// <param name="pupil"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -99,7 +131,14 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(pupil);
         }
 
-        // GET: Pupils/Delete/5
+        /// <summary>
+        /// This method shows the pupil to delete
+        /// <example>GET: Pupils/Delete/5</example>
+        /// <example>GET: Pupils/Delete/1</example>
+        /// </summary>
+        /// <param name="id">Id of the selected pupil</param>
+        /// <returns></returns>
+        // 
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -114,7 +153,14 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(pupil);
         }
 
-        // POST: Pupils/Delete/5
+        /// <summary>
+        /// This method permits to remove the selected pupil from the database
+        /// <example>POST: Pupils/Delete/5</example>
+        /// <example>POST: Pupils/Delete/1</example>
+        /// </summary>
+        /// <param name="id">Id of the selected pupil</param>
+        /// <returns></returns>
+        // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

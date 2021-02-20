@@ -40,16 +40,17 @@ namespace PassionProjectMVP_Diarra.Models
             new MediaTypeWithQualityHeaderValue("application/json"));
 
 
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
         }
 
 
-        // GET: Locations
+        /// <summary>
+        /// This method displays the list of all locations
+        /// <example>Locations/LocationList</example>
+        /// </summary>
+        /// <returns>Display location list</returns>
+        /// 
         public ActionResult LocationList()
         {
-            //var Locations = db.Locations.Include(m => m.Location);
-            //return View(Locations.ToList());
 
             string url = "LocationData/GetLocations";
             HttpResponseMessage response = client.GetAsync(url).Result;
@@ -64,23 +65,21 @@ namespace PassionProjectMVP_Diarra.Models
             }
         }
 
-        // GET: Locations/Details/5
+
+        /// <summary>
+        /// This method provides details about the selected location which ID is given
+        /// <example>GET: Locations/Details/5</example>
+        /// <example>GET: Locations/Details/3</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Shows information about the location</returns>
+        // 
         public ActionResult Details(int id)
         {
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Location Location = db.Locations.Find(id);
-            //if (Location == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Location);
+            
             string url = "Locationdata/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
                 //Put data into player data transfer object
@@ -96,26 +95,23 @@ namespace PassionProjectMVP_Diarra.Models
         // GET: Locations/Create
         public ActionResult Create()
         {
-            // ViewBag.classId = new SelectList(db.Locations, "classId", "className");
             return View();
         }
 
-        // POST: Locations/Create
+
+        /// <summary>
+        /// This method creates and saves a new location to the database
+        /// <example>POST: Locations/Create</example>
+        /// </summary>
+        /// <param name="newLocation"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Location newLocation)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Locations.Add(Location);
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-
-            //ViewBag.classId = new SelectList(db.Locations, "classId", "className", Location.classId);
-            //return View(Location);
 
             string url = "LocationData/AddLocation";
             HttpContent content = new StringContent(jss.Serialize(newLocation));
@@ -124,10 +120,8 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-
-                //int modid = response.Content.ReadAsAsync<int>().Result;
-                //return RedirectToAction("Details", new { id = modid });
-                return RedirectToAction("LocationList");
+                return RedirectToAction("Details", new { id = newLocation.locId });
+               // return RedirectToAction("LocationList");
             }
             else
             {
@@ -135,16 +129,21 @@ namespace PassionProjectMVP_Diarra.Models
             }
         }
 
-        // GET: Locations/Edit/5
+
+        /// <summary>
+        /// This method shows the information about the location to edit
+        /// <example>GET: Locations/Edit/5</example>
+        /// <example>GET: Locations/Edit/1</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Fields of the location to edit</returns>
+        // 
         public ActionResult Edit(int id)
         {
             string url = "LocationData/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 Location SelectedPlayer = response.Content.ReadAsAsync<Location>().Result;
                 return View(SelectedPlayer);
             }
@@ -152,20 +151,18 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Location Location = db.Locations.Find(id);
-            //if (Location == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //ViewBag.classId = new SelectList(db.Locations, "classId", "className", Location.classId);
-            //return View(Location);
         }
 
-        // POST: Locations/Edit/5
+
+        /// <summary>
+        /// This method edits and saves the selected location which ID is given
+        /// <example>POST: Locations/Edit/5</example>
+        /// <example>POST: Locations/Edit/3</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentLocation"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -188,24 +185,23 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //    if (ModelState.IsValid)
-            //    {
-            //        db.Entry(Location).State = EntityState.Modified;
-            //        db.SaveChanges();
-            //        return RedirectToAction("Index");
-            //    }
-            //    ViewBag.classId = new SelectList(db.Locations, "classId", "className", Location.classId);
-            //    return View(Location);
+            
         }
 
-        // GET: Locations/Delete/5
+        /// <summary>
+        /// This method displays the fields of the location to delete
+        /// <example>GET: Locations/Delete/5</example>
+        /// <example>GET: Locations/Delete/5</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns> Shows the selected location</returns>
+        // 
 
         public ActionResult Delete(int id)
         {
             string url = "LocationData/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
                 //Put data into player data transfer object
@@ -216,19 +212,17 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Location Location = db.Locations.Find(id);
-            //if (Location == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Location);
+            
         }
 
-        // POST: Locations/Delete/5
+        /// <summary>
+        /// This method removes the selected location from the database
+        /// <example>POST: Locations/Delete/5 </example>
+        ///  <example>POST: Locations/Delete/2 </example>
+        /// </summary>
+        /// <param name="id">Id of the selected location</param>
+        /// <returns></returns>
+        // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -237,8 +231,7 @@ namespace PassionProjectMVP_Diarra.Models
             //post body is empty
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
 
@@ -248,10 +241,7 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //Location Location = db.Locations.Find(id);
-            //db.Locations.Remove(Location);
-            //db.SaveChanges();
-            //return RedirectToAction("Index");
+           
         }
 
         //protected override void Dispose(bool disposing)

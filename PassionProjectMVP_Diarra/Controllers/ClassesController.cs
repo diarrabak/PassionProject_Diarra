@@ -40,18 +40,16 @@ namespace PassionProjectMVP_Diarra.Models
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
 
-
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
         }
 
+        /// <summary>
+        /// This method return the classe list to view
+        /// <example>Classes/ClasseList</example>
+        /// </summary>
+        /// <returns>Classe list</returns>
 
-        // GET: Classes
         public ActionResult ClasseList()
         {
-            //var Classes = db.Classes.Include(m => m.Classe);
-            //return View(Classes.ToList());
-
             string url = "ClasseData/GetClasses";
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -65,24 +63,21 @@ namespace PassionProjectMVP_Diarra.Models
             }
         }
 
-        // GET: Classes/Details/5
+        /// <summary>
+        /// This method gives details about the selected class element. It shows all the pupils and modules linked to the class.
+        /// <example>Classes/Details/5</example>
+        /// <example>Classes/Details/2</example>
+        /// </summary>
+        /// <param name="id">The ID of the selected class</param>
+        /// <returns>Class details with pupils and modules</returns>
+        /// 
         public ActionResult Details(int id)
         {
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Classe Classe = db.Classes.Find(id);
-            //if (Classe == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Classe);
+            
             ShowClasse ViewModel = new ShowClasse();
             string url = "ClasseData/FindClasse/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
                 //Put data into classe data transfer object
@@ -96,8 +91,6 @@ namespace PassionProjectMVP_Diarra.Models
 
             url = "ClasseData/GetClasseModules/" + id;
             response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
                 //Put data into Team data transfer object
@@ -111,8 +104,6 @@ namespace PassionProjectMVP_Diarra.Models
 
             url = "ClasseData/GetClassePupils/" + id;
             response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
                 //Put data into Team data transfer object
@@ -127,30 +118,30 @@ namespace PassionProjectMVP_Diarra.Models
             return View(ViewModel);
         }
 
-        // GET: Classes/Create
+       /// <summary>
+       /// This methos shows the fields of the class to be created
+       /// </summary>
+       /// <returns></returns>
         public ActionResult Create()
         {
             // ViewBag.classId = new SelectList(db.Classes, "classId", "className");
             return View();
         }
 
-        // POST: Classes/Create
+        /// <summary>
+        /// This method saves the new classe to the database
+        /// <example>POST: Classes/Create</example>
+        /// </summary>
+        /// <param name="newClasse"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Classe newClasse)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Classes.Add(Classe);
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", Classe.classId);
-            //return View(Classe);
-
+          
             string url = "ClasseData/AddClasse";
             HttpContent content = new StringContent(jss.Serialize(newClasse));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -160,8 +151,8 @@ namespace PassionProjectMVP_Diarra.Models
             {
 
               //  int modid = response.Content.ReadAsAsync<int>().Result;
-                //return RedirectToAction("Details", new { id = modid });
-                return RedirectToAction("ClasseList");
+                return RedirectToAction("Details", new { id = newClasse.classId });
+                //return RedirectToAction("ClasseList");
             }
             else
             {
@@ -169,13 +160,17 @@ namespace PassionProjectMVP_Diarra.Models
             }
         }
 
-        // GET: Classes/Edit/5
+        /// <summary>
+        /// This method shows the fields of the classe element to edit which ID is provided
+        /// <example>GET: Classes/Edit/5 </example>
+        /// </summary>
+        /// <param name="id">Id of the selected classe</param>
+        /// <returns>Display the selected classe element</returns>
+        // 
         public ActionResult Edit(int id)
         {
             string url = "ClasseData/FindClasse/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
                 //Put data into player data transfer object
@@ -186,20 +181,17 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Classe Classe = db.Classes.Find(id);
-            //if (Classe == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", Classe.classId);
-            //return View(Classe);
         }
 
-        // POST: Classes/Edit/5
+        /// <summary>
+        /// This method is used to edit and save the selected classe element
+        /// <example>Classes/Edit/5</example>
+        /// /// <example>Classes/Edit/1</example>
+        /// </summary>
+        /// <param name="id">Id of the classe to be edited</param>
+        /// <param name="currentClasse"></param>
+        /// <returns></returns>
+        // POST: 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -222,27 +214,26 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //    if (ModelState.IsValid)
-            //    {
-            //        db.Entry(Classe).State = EntityState.Modified;
-            //        db.SaveChanges();
-            //        return RedirectToAction("Index");
-            //    }
-            //    ViewBag.classId = new SelectList(db.Classes, "classId", "className", Classe.classId);
-            //    return View(Classe);
+            
         }
 
-        // GET: Classes/Delete/5
+
+        /// <summary>
+        /// This method shows the information about the classe element before deletion
+        /// <example>GET: Classes/Delete/5</example>
+        /// <example>GET: Classes/Delete/1</example>
+        /// </summary>
+        /// <param name="id">Id of the selected classe</param>
+        /// <returns>Selected classe </returns>
+        // 
 
         public ActionResult Delete(int id)
         {
             string url = "ClasseData/FindClasse/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 Classe SelectedClasse = response.Content.ReadAsAsync<Classe>().Result;
                 return View(SelectedClasse);
             }
@@ -250,19 +241,18 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Classe Classe = db.Classes.Find(id);
-            //if (Classe == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Classe);
+           
         }
 
-        // POST: Classes/Delete/5
+        /// <summary>
+        /// This method removes the selected classe from the database
+        /// <example>POST: Classes/Delete/5</example>
+        /// <example>POST: Classes/Delete/2</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
+        // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -271,8 +261,7 @@ namespace PassionProjectMVP_Diarra.Models
             //post body is empty
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+           
             if (response.IsSuccessStatusCode)
             {
 
@@ -282,10 +271,7 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //Classe Classe = db.Classes.Find(id);
-            //db.Classes.Remove(Classe);
-            //db.SaveChanges();
-            //return RedirectToAction("Index");
+           
         }
 
         //protected override void Dispose(bool disposing)

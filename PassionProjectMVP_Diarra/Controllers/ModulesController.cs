@@ -40,11 +40,13 @@ namespace PassionProjectMVP_Diarra.Models
             new MediaTypeWithQualityHeaderValue("application/json"));
 
 
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
         }
 
-
+        /// <summary>
+        /// This method displays the list of all modules
+        /// <example>Modules/ModuleList</example>
+        /// </summary>
+        /// <returns></returns>
         // GET: Modules
         public ActionResult ModuleList()
         {
@@ -64,8 +66,15 @@ namespace PassionProjectMVP_Diarra.Models
             //    }
         }
 
-            // GET: Modules/Details/5
-            public ActionResult Details(int id)
+        /// <summary>
+        /// This method shows the information in the selected module which ID is given
+        /// <example>GET: Modules/Details/5</example>
+        /// <example>GET: Modules/Details/3</example>
+        /// </summary>
+        /// <param name="id">ID of selected module</param>
+        /// <returns></returns>
+        // 
+        public ActionResult Details(int id)
         {
             if (id == null)
             {
@@ -95,6 +104,11 @@ namespace PassionProjectMVP_Diarra.Models
             //}
         }
 
+
+        /// <summary>
+        /// This method displays information of the module to create
+        /// </summary>
+        /// <returns></returns>
         // GET: Modules/Create
         public ActionResult Create()
         {
@@ -102,7 +116,13 @@ namespace PassionProjectMVP_Diarra.Models
             return View();
         }
 
-        // POST: Modules/Create
+        /// <summary>
+        /// This method permits to create and save a new module
+        /// <example>POST: Modules/Create</example>
+        /// </summary>
+        /// <param name="module"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -168,7 +188,16 @@ namespace PassionProjectMVP_Diarra.Models
             return View(module);
         }
 
-        // POST: Modules/Edit/5
+
+        /// <summary>
+        /// This method edits and saves the selected module
+        /// <example>POST: Modules/Edit/1</example>
+        /// <example>POST: Modules/Edit/4</example>
+        /// </summary>
+        /// <param name="id"> The ID of the selected module</param>
+        /// <param name="module"></param>
+        /// <returns></returns>
+        // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -222,19 +251,17 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Module module = db.Modules.Find(id);
-            //if (module == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(module);
+          
         }
 
-        // POST: Modules/Delete/5
+        /// <summary>
+        /// This method deletes the selected module from the database
+        /// <example>POST: Modules/Delete/5</example>
+        /// <example>POST: Modules/Delete/2</example>
+        /// </summary>
+        /// <param name="id">Id of the selected module</param>
+        /// <returns></returns>
+        // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -243,8 +270,7 @@ namespace PassionProjectMVP_Diarra.Models
             //post body is empty
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+           
             if (response.IsSuccessStatusCode)
             {
 
@@ -254,10 +280,7 @@ namespace PassionProjectMVP_Diarra.Models
             {
                 return RedirectToAction("Error");
             }
-            //Module module = db.Modules.Find(id);
-            //db.Modules.Remove(module);
-            //db.SaveChanges();
-            //return RedirectToAction("Index");
+           
         }
 
         //protected override void Dispose(bool disposing)

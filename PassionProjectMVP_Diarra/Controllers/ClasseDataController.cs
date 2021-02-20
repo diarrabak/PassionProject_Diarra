@@ -19,7 +19,7 @@ namespace PassionProjectMVP_Diarra.Controllers
 
         //This code is mostly scaffolded from the base models and database context
         //New > WebAPIController with Entity Framework Read/Write Actions
-        //Choose model "Player"
+        //Choose model "Classe"
         //Choose context "Passion Data Context"
         //Note: The base scaffolded code needs many improvements for a fully
         //functioning MVP.

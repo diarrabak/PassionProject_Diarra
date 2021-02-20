@@ -19,7 +19,7 @@ namespace PassionProjectMVP_Diarra.Controllers
 
         //This code is mostly scaffolded from the base models and database context
         //New > WebAPIController with Entity Framework Read/Write Actions
-        //Choose model "Player"
+        //Choose model "Pupil"
         //Choose context "Passion Data Context"
         //Note: The base scaffolded code needs many improvements for a fully
         //functioning MVP.
@@ -86,6 +86,13 @@ namespace PassionProjectMVP_Diarra.Controllers
             return Ok(ClasseDtos);
         }
 
+        /// <summary>
+        /// This method permits to get a pupil which ID is provided
+        /// <example>GET api/PupilData/FindPupil/2</example>
+        /// <example>GET api/PupilData/FindPupil/5</example>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
 
         [HttpGet]
         [ResponseType(typeof(PupilDto))]
