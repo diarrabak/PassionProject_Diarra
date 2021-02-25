@@ -165,9 +165,9 @@ namespace PassionProjectMVP_Diarra.Models
             if (response.IsSuccessStatusCode)
             {
 
-                int modid = response.Content.ReadAsAsync<int>().Result;
+                //int modid = response.Content.ReadAsAsync<int>().Result;
                 return RedirectToAction("ModuleList");
-                //return RedirectToAction("Details", new { id = modid });
+                //return RedirectToAction("Details", new { id = module.modId });
             }
             else
             {

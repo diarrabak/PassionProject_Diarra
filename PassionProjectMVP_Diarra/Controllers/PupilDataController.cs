@@ -246,7 +246,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         // PUT: 
         [HttpPost]
         [ResponseType(typeof(void))]
-        public IHttpActionResult UpdatePupil(int id, PupilDto pupil)
+        public IHttpActionResult UpdatePupil(int id, Pupil pupil)
         {
             if (!ModelState.IsValid)
             {
@@ -296,7 +296,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
 
             db.Pupils.Add(pupil);
-            //db.SaveChanges();
+            db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = pupil.pId }, pupil);
         }

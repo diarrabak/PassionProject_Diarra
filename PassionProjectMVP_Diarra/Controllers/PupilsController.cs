@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -145,7 +146,7 @@ namespace PassionProjectMVP_Diarra.Controllers
 
             //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
             //return View(Pupil);
-
+            Debug.WriteLine(Pupil.firstName + " " +Pupil.lastName+" "+Pupil.classId+" "+Pupil.locId+" "+ Pupil.pId);
             string url = "PupilData/AddPupil";
             HttpContent content = new StringContent(jss.Serialize(Pupil));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -154,8 +155,10 @@ namespace PassionProjectMVP_Diarra.Controllers
             if (response.IsSuccessStatusCode)
             {
 
-                int modid = response.Content.ReadAsAsync<int>().Result;
-                return RedirectToAction("Details", new { id = modid });
+                //int modid = response.Content.ReadAsAsync<int>().Result;
+                //Debug.WriteLine(Pupil.pId + "and" + modid);
+                //return RedirectToAction("Details", new { id = modid });
+                return RedirectToAction("PupilList");
             }
             else
             {
@@ -229,6 +232,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         public ActionResult Edit(int id, Pupil Pupil)//currentPupil
         {
 
+            Debug.WriteLine(Pupil.firstName + " " +Pupil.lastName+" "+Pupil.classId+" "+Pupil.locId+" "+ Pupil.pId + " " + id);
             string url = "PupilData/UpdatePupil/" + id;
 
             HttpContent content = new StringContent(jss.Serialize(Pupil));

@@ -44,7 +44,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.pupil.classId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            <select name="ClassID">
+            <select name="pupil.classId">
                 @foreach (var classe in Model.allClasses)
                 {
                     string selected = "";
@@ -61,7 +61,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.pupil.locId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            <select name="LocationID">
+            <select name="pupil.locId">
                 @foreach (var location in Model.allLocations)
                 {
                     string selected = "";
