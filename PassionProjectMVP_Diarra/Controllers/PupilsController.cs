@@ -4,181 +4,323 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using PassionProjectMVP_Diarra.Models;
+using PassionProjectMVP_Diarra.Models.ModelViews;
 
 namespace PassionProjectMVP_Diarra.Controllers
 {
     public class PupilsController : Controller
     {
-        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
         private PassionDataContext db = new PassionDataContext();
 
+        /*All the controllers can be automatically generated from:
+        Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->
+        Add->Select the right Model and database, then give a name to the controller. Keep the 3 fields of Views ticked. 
+        */
+        //Http Client is the proper way to connect to a webapi
+        //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
 
-        /// <summary>
-        /// This method displays the pupil list to the view
-        /// <example>Pupils/PupilList</example>
-        /// </summary>
-        /// <returns></returns>
+        private JavaScriptSerializer jss = new JavaScriptSerializer();
+        private static readonly HttpClient client;
+
+
+        static PupilsController()
+        {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false
+            };
+            client = new HttpClient(handler);
+            //change this to match your own local port number
+            client.BaseAddress = new Uri("https://localhost:44327/api/");
+            client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
+
+        }
+
+
         // GET: Pupils
         public ActionResult PupilList()
         {
-            var pupils = db.Pupils.Include(p => p.Classe).Include(p => p.Location);
-            return View(pupils.ToList());
+            //var Pupils = db.Pupils.Include(m => m.Classe);
+            //return View(Pupils.ToList());
+
+            string url = "PupilData/GetPupils";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<ShowPupil> SelectedPupils = response.Content.ReadAsAsync<IEnumerable<ShowPupil>>().Result;
+                return View(SelectedPupils);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
-        /// <summary>
-        /// <example>GET: Pupils/Details/5</example>
-        /// <example>GET: Pupils/Details/1</example>
-        /// </summary>
-        /// <param name="id">Id of the selected pupil</param>
-        /// <returns>Shows information about the pupil</returns>
-        // 
-        public ActionResult Details(int? id)
+        // GET: Pupils/Details/5
+        public ActionResult Details(int id)
         {
-            if (id == null)
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //Pupil Pupil = db.Pupils.Find(id);
+            //if (Pupil == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            //return View(Pupil);
+            ShowPupil showPupil = new ShowPupil();
+            string url = "Pupildata/FindPupil/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //Put data into player data transfer object
+                PupilDto SelectedPupil = response.Content.ReadAsAsync<PupilDto>().Result;
+                showPupil.pupil=SelectedPupil;
+
+                url = "PupilData/GetPupilClasse/" + id;
+                response = client.GetAsync(url).Result;
+                ClasseDto SelectedClasse = response.Content.ReadAsAsync<ClasseDto>().Result;
+                showPupil.classe = SelectedClasse;
+
+                url = "PupilData/GetPupilLocation/" + id;
+                response = client.GetAsync(url).Result;
+                LocationDto SelectedLocation = response.Content.ReadAsAsync<LocationDto>().Result;
+                showPupil.location = SelectedLocation;
+
+                return View(showPupil);
             }
-            Pupil pupil = db.Pupils.Find(id);
-            if (pupil == null)
+            else
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
-            return View(pupil);
         }
 
         // GET: Pupils/Create
         public ActionResult Create()
         {
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className");
-            ViewBag.locId = new SelectList(db.Locations, "locId", "city");
-            return View();
+            // ViewBag.classId = new SelectList(db.Pupils, "classId", "className");
+            //return View();
+            EditPupil editPupil = new EditPupil();
+            string url = "PupilData/GetClasses";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+
+            IEnumerable<ClasseDto> SelectedClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
+            editPupil.allClasses = SelectedClasses;
+
+            url = "PupilData/GetLocations";
+            response = client.GetAsync(url).Result;
+           
+            IEnumerable<LocationDto> SelectedLocations = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+            editPupil.allLocations = SelectedLocations;
+
+            return View(editPupil);
         }
 
-        /// <summary>
-        /// This method creates and adds a new pupil to the database
-        /// <example>POST: Pupils/Create</example>
-        /// </summary>
-        /// <param name="pupil">Selected pupil</param>
-        /// <returns></returns>
-        // 
+        // POST: Pupils/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "pId,firstName,lastName,age,classId,locId")] Pupil pupil)
+        public ActionResult Create(Pupil Pupil)//newPupil
         {
-            if (ModelState.IsValid)
-            {
-                db.Pupils.Add(pupil);
-                db.SaveChanges();
-                return RedirectToAction("PupilList");
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    db.Pupils.Add(Pupil);
+            //    db.SaveChanges();
+            //    return RedirectToAction("Index");
+            //}
 
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", pupil.classId);
-            ViewBag.locId = new SelectList(db.Locations, "locId", "city", pupil.locId);
-            return View(pupil);
+            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
+            //return View(Pupil);
+
+            string url = "PupilData/AddPupil";
+            HttpContent content = new StringContent(jss.Serialize(Pupil));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                int modid = response.Content.ReadAsAsync<int>().Result;
+                return RedirectToAction("Details", new { id = modid });
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
-        /// <summary>
-        /// This method shows the pupil which ID is provided
-        /// <example>GET: Pupils/Edit/5</example>
-        /// <example>GET: Pupils/Edit/1</example>
-        /// </summary>
-        /// <param name="id">ID of the selected pupil</param>
-        /// <returns>Shows the selected information</returns>
-        // 
-        public ActionResult Edit(int? id)
+        // GET: Pupils/Edit/5
+        public ActionResult Edit(int id)
         {
-            if (id == null)
+            EditPupil newPupil = new EditPupil();
+            string url = "PupilData/FindPupil/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //Put data into player data transfer object
+                PupilDto SelectedPupil = response.Content.ReadAsAsync<PupilDto>().Result;
+                newPupil.pupil = SelectedPupil;
             }
-            Pupil pupil = db.Pupils.Find(id);
-            if (pupil == null)
+            else
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", pupil.classId);
-            ViewBag.locId = new SelectList(db.Locations, "locId", "city", pupil.locId);
-            return View(pupil);
+
+            url = "PupilData/GetClasses";
+            response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<ClasseDto> SelectedClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
+                newPupil.allClasses = SelectedClasses;
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
+            url = "PupilData/GetLocations";
+            response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<LocationDto> SelectedLocations = response.Content.ReadAsAsync<IEnumerable<LocationDto>>().Result;
+                newPupil.allLocations = SelectedLocations;
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+            return View(newPupil);
+
+
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //Pupil Pupil = db.Pupils.Find(id);
+            //if (Pupil == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
+            //return View(Pupil);
         }
 
-        /// <summary>
-        /// This method permits to edit and save the selected pupil
-        /// <example>POST: Pupils/Edit/5</example>
-        /// <example>POST: Pupils/Edit/4</example>
-        /// </summary>
-        /// <param name="pupil"></param>
-        /// <returns></returns>
-        // 
+        // POST: Pupils/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "pId,firstName,lastName,age,classId,locId")] Pupil pupil)
+        public ActionResult Edit(int id, Pupil Pupil)//currentPupil
         {
-            if (ModelState.IsValid)
+
+            string url = "PupilData/UpdatePupil/" + id;
+
+            HttpContent content = new StringContent(jss.Serialize(Pupil));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
             {
-                db.Entry(pupil).State = EntityState.Modified;
-                db.SaveChanges();
-                //return RedirectToAction("PupilList");
-                return RedirectToAction("Details", new { id = pupil.pId });
+
+                return RedirectToAction("Details", new { id = Pupil.pId });
             }
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", pupil.classId);
-            ViewBag.locId = new SelectList(db.Locations, "locId", "city", pupil.locId);
-            return View(pupil);
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    db.Entry(Pupil).State = EntityState.Modified;
+            //    db.SaveChanges();
+            //    return RedirectToAction("Index");
+            //}
+            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
+            //return View(Pupil);
         }
 
-        /// <summary>
-        /// This method shows the pupil to delete
-        /// <example>GET: Pupils/Delete/5</example>
-        /// <example>GET: Pupils/Delete/1</example>
-        /// </summary>
-        /// <param name="id">Id of the selected pupil</param>
-        /// <returns></returns>
-        // 
-        public ActionResult Delete(int? id)
+        // GET: Pupils/Delete/5
+
+        public ActionResult Delete(int id)
         {
-            if (id == null)
+            string url = "PupilData/FindPupil/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //Put data into player data transfer object
+                Pupil SelectedPupil = response.Content.ReadAsAsync<Pupil>().Result;
+                return View(SelectedPupil);
             }
-            Pupil pupil = db.Pupils.Find(id);
-            if (pupil == null)
+            else
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
-            return View(pupil);
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //Pupil Pupil = db.Pupils.Find(id);
+            //if (Pupil == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            //return View(Pupil);
         }
 
-        /// <summary>
-        /// This method permits to remove the selected pupil from the database
-        /// <example>POST: Pupils/Delete/5</example>
-        /// <example>POST: Pupils/Delete/1</example>
-        /// </summary>
-        /// <param name="id">Id of the selected pupil</param>
-        /// <returns></returns>
-        // 
+        // POST: Pupils/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Pupil pupil = db.Pupils.Find(id);
-            db.Pupils.Remove(pupil);
-            db.SaveChanges();
-            return RedirectToAction("PupilList");
+            string url = "PupilData/DeletePupil/" + id;
+            //post body is empty
+            HttpContent content = new StringContent("");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+
+                return RedirectToAction("PupilList");
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+            //Pupil Pupil = db.Pupils.Find(id);
+            //db.Pupils.Remove(Pupil);
+            //db.SaveChanges();
+            //return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        db.Dispose();
+        //    }
+        //    base.Dispose(disposing);
+        //}
     }
 }
+

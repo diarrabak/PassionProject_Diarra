@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using PassionProjectMVP_Diarra.Models;
+using PassionProjectMVP_Diarra.Models.ModelViews;
 
 namespace PassionProjectMVP_Diarra.Controllers
 {
@@ -30,17 +31,31 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// </summary>
         /// <returns> The list of Modules with the first name, last name, classe and Module from the database</returns>
 
-        [ResponseType(typeof(IEnumerable<ModuleDto>))]
+        [ResponseType(typeof(IEnumerable<ShowModule>))]
+        //[ResponseType(typeof(IEnumerable<ModuleDto>))]
         public IHttpActionResult GetModules()
         {
 
             //return (IHttpActionResult)db.Modules.ToList();
             List<Module> Modules = db.Modules.ToList();
-            List<ModuleDto> ModuleDtos = new List<ModuleDto> { };
+
+            List<ShowModule> ModuleDtos = new List<ShowModule> { };
+            //List<ModuleDto> ModuleDtos = new List<ModuleDto> { };
 
             //Here you can select the information to be transfered to the  API
             foreach (var Module in Modules)
             {
+                Classe classe = db.Classes.Where(c => c.Modules.Any(m => m.modId == Module.modId)).FirstOrDefault();
+
+                ClasseDto parentClass = new ClasseDto
+                {
+                    classId = classe.classId,
+                    className = classe.className,
+                    startDate = classe.startDate,
+                    endDate = classe.endDate
+                };
+
+                ShowModule module = new ShowModule();
                 ModuleDto NewModule = new ModuleDto
                 {
                     modId = Module.modId,
@@ -50,10 +65,69 @@ namespace PassionProjectMVP_Diarra.Controllers
                     fees =Module.fees,
                     classId=Module.classId
                 };
-                ModuleDtos.Add(NewModule);
+                module.module = NewModule;
+                module.classe = parentClass;
+                ModuleDtos.Add(module);
             }
 
             return Ok(ModuleDtos);
+        }
+
+       /// <summary>
+       /// This method gives the full list of classes
+       /// </summary>
+       /// <returns></returns>
+
+        [ResponseType(typeof(IEnumerable<ClasseDto>))]
+        public IHttpActionResult GetClasses()
+        {
+
+            //return (IHttpActionResult)db.Classes.ToList();
+            List<Classe> Classes = db.Classes.ToList();
+            List<ClasseDto> ClasseDtos = new List<ClasseDto> { };
+
+            //Here you can select the information to be transfered to the  API
+            foreach (var Classe in Classes)
+            {
+                ClasseDto NewClasse = new ClasseDto
+                {
+                    classId = Classe.classId,
+                    className = Classe.className
+                };
+                ClasseDtos.Add(NewClasse);
+            }
+
+            return Ok(ClasseDtos);
+        }
+
+        /// <summary>
+        /// This method gives information of the class a module belongs
+        /// </summary>
+        /// <returns>It returns the classe parent of the module</returns>
+
+        [ResponseType(typeof(ClasseDto))]
+        public IHttpActionResult GetModuleClasse(int id)
+        {
+
+            //Find the classe to which the current module belongs
+            Classe classe = db.Classes.Where(c => c.Modules.Any(m=>m.modId == id)).FirstOrDefault();
+
+            //In case this classe does not exist
+            if (classe == null)
+            {
+               
+                 return NotFound();
+            }
+      
+            ClasseDto parentClass = new ClasseDto
+            {
+                classId = classe.classId,
+                className = classe.className,
+                startDate = classe.startDate,
+                endDate = classe.endDate
+            };  
+
+            return Ok(parentClass);
         }
 
         /// <summary>
@@ -97,7 +171,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         // PUT: 
         [HttpPost]
         [ResponseType(typeof(void))]
-        public IHttpActionResult UpdateModule(int id, Module Module)
+        public IHttpActionResult UpdateModule(int id, [FromBody] Module Module)
         {
             if (!ModelState.IsValid)
             {

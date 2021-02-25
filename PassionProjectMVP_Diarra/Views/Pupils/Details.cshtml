@@ -1,7 +1,9 @@
-﻿@model PassionProjectMVP_Diarra.Models.Pupil
+﻿@model PassionProjectMVP_Diarra.Models.ModelViews.ShowPupil
 
 @{
     ViewBag.Title = "Details";
+    var temp = @Html.DisplayFor(model => model.classe.className).ToHtmlString();
+    var tempLoc = @Html.DisplayFor(model => model.location.country).ToHtmlString();
 }
 
 <h2>Details</h2>
@@ -11,55 +13,57 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Classe.className)
+            @Html.DisplayNameFor(model => model.classe.className)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Classe.className)
+            @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
+            @*@Html.DisplayFor(model => model.classe.className)*@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Location.city)
+            @Html.DisplayNameFor(model => model.location.city)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Location.city)
+            @Html.DisplayFor(model => model.location.city)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Location.country)
+            @Html.DisplayNameFor(model => model.location.country)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Location.country)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.firstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.firstName)
+            @Html.ActionLink(tempLoc, "Index", "Locations/Details/" + Model.location.locId)
+            @*@Html.DisplayFor(model => model.location.country)*@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.lastName)
+            @Html.DisplayNameFor(model => model.pupil.firstName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.lastName)
+            @Html.DisplayFor(model => model.pupil.firstName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.age)
+            @Html.DisplayNameFor(model => model.pupil.lastName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.age)
+            @Html.DisplayFor(model => model.pupil.lastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pupil.age)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pupil.age)
         </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.pId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.pupil.pId }) |
     @Html.ActionLink("Back to Pupil List", "PupilList")
 </p>

@@ -216,7 +216,12 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ModelViews\EditModule.cs" />
+    <Compile Include="Models\ModelViews\EditPupil.cs" />
     <Compile Include="Models\ModelViews\ShowClasse.cs" />
+    <Compile Include="Models\ModelViews\ShowLocation.cs" />
+    <Compile Include="Models\ModelViews\ShowModule.cs" />
+    <Compile Include="Models\ModelViews\ShowPupil.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Pupil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -285,7 +290,6 @@
     <Content Include="Views\Classes\ClasseList.cshtml" />
     <Content Include="Views\Locations\Create.cshtml" />
     <Content Include="Views\Locations\Delete.cshtml" />
-    <Content Include="Views\Locations\Details.cshtml" />
     <Content Include="Views\Locations\Edit.cshtml" />
     <Content Include="Views\Locations\LocationList.cshtml" />
     <Content Include="Views\Modules\Create.cshtml" />
@@ -298,6 +302,7 @@
     <Content Include="Views\Pupils\Details.cshtml" />
     <Content Include="Views\Pupils\Edit.cshtml" />
     <Content Include="Views\Pupils\PupilList.cshtml" />
+    <Content Include="Views\Locations\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,4 +1,4 @@
-﻿@model PassionProjectMVP_Diarra.Models.Module
+﻿@model PassionProjectMVP_Diarra.Models.ModelViews.EditModule
 
 @{
     ViewBag.Title = "Edit";
@@ -15,45 +15,54 @@
         <h4>Module</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.modId)
+        @Html.HiddenFor(model => model.module.modId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.moduleName, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.module.moduleName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.moduleName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.moduleName, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.module.moduleName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.module.moduleName, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.description, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.module.description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.module.description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.module.description, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.delivery, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.module.delivery, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.delivery, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.delivery, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.module.delivery, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.module.delivery, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.fees, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.module.fees, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fees, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fees, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.module.fees, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.module.fees, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.classId, "classId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.module.classId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("classId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.classId, "", new { @class = "text-danger" })
+                <select name="ClassID">
+                    @foreach (var classe in Model.allClasses)
+                    {
+                        string selected = "";
+                        if (Model.module.classId == classe.classId)
+                        {
+                            selected = "";
+                        }
+                      <option value="@classe.classId"@selected>@classe.className</option>
+                    }
+                </select>
             </div>
         </div>
 

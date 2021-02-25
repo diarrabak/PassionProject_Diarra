@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.Module>
+﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.ModelViews.ShowModule>
 
 @{
     ViewBag.Title = "ModuleList";
@@ -13,19 +13,19 @@
     <tr>
         
         <th>
-            @Html.DisplayNameFor(model => model.moduleName)
+            @Html.DisplayNameFor(model => model.module.moduleName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.description)
+            @Html.DisplayNameFor(model => model.module.description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.delivery)
+            @Html.DisplayNameFor(model => model.module.delivery)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.fees)
+            @Html.DisplayNameFor(model => model.module.fees)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Classe.className)
+            @Html.DisplayNameFor(model => model.classe.className)
         </th>
 
         <th></th>
@@ -33,29 +33,29 @@
 
 @foreach (var item in Model) {
 
-    var temp = @Html.DisplayFor(modelItem => item.Classe.className).ToHtmlString();
+    var temp = @Html.DisplayFor(modelItem => item.classe.className).ToHtmlString();
 <tr>
 
     <td>
-        @Html.DisplayFor(modelItem => item.moduleName)
+        @Html.DisplayFor(modelItem => item.module.moduleName)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.description)
+        @Html.DisplayFor(modelItem => item.module.description)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.delivery)
+        @Html.DisplayFor(modelItem => item.module.delivery)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.fees)
+        @Html.DisplayFor(modelItem => item.module.fees)
     </td>
     <td>
-        @Html.ActionLink(temp, "Index", "Classes/Details/" + item.Classe.classId)
+        @Html.ActionLink(temp, "Index", "Classes/Details/" + item.classe.classId)
         @*@Html.DisplayFor(modelItem => item.Classe.className)*@
     </td>
     <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.modId }) |
-        @Html.ActionLink("Details", "Details", new { id = item.modId }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.modId })
+        @Html.ActionLink("Edit", "Edit", new { id = item.module.modId }) |
+        @Html.ActionLink("Details", "Details", new { id = item.module.modId }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.module.modId })
     </td>
 </tr>
 }

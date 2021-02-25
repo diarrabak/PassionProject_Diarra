@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.Pupil>
+﻿@model IEnumerable<PassionProjectMVP_Diarra.Models.ModelViews.ShowPupil>
 
 @{
     ViewBag.Title = "PupilList";
@@ -13,55 +13,55 @@
     <tr>
 
         <th>
-            @Html.DisplayNameFor(model => model.firstName)
+            @Html.DisplayNameFor(model => model.pupil.firstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.lastName)
+            @Html.DisplayNameFor(model => model.pupil.lastName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.age)
+            @Html.DisplayNameFor(model => model.pupil.age)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Classe.className)
+            @Html.DisplayNameFor(model => model.classe.className)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Location.city)
+            @Html.DisplayNameFor(model => model.location.city)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Location.country)
+            @Html.DisplayNameFor(model => model.location.country)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
-    var temp = @Html.DisplayFor(modelItem => item.Classe.className).ToHtmlString();
-    var tempCountry= @Html.DisplayFor(modelItem => item.Location.country).ToHtmlString();
+    var temp = @Html.DisplayFor(modelItem => item.classe.className).ToHtmlString();
+    var tempCountry= @Html.DisplayFor(modelItem => item.location.country).ToHtmlString();
 <tr>
 
     <td>
-        @Html.DisplayFor(modelItem => item.firstName)
+        @Html.DisplayFor(modelItem => item.pupil.firstName)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.lastName)
+        @Html.DisplayFor(modelItem => item.pupil.lastName)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.age)
+        @Html.DisplayFor(modelItem => item.pupil.age)
     </td>
     <td>
-        @Html.ActionLink(temp, "Index", "Classes/Details/" + item.Classe.classId)
+        @Html.ActionLink(temp, "Index", "Classes/Details/" + item.classe.classId)
         @*@Html.DisplayFor(modelItem => item.Classe.className)*@
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.Location.city)
+        @Html.DisplayFor(modelItem => item.location.city)
     </td>
     <td>
         @*@Html.DisplayFor(modelItem => item.Location.country)*@
-        @Html.ActionLink(tempCountry, "Index", "Locations/Details/" + item.Location.locId)
+        @Html.ActionLink(tempCountry, "Index", "Locations/Details/" + item.location.locId)
     </td>
     <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.pId }) |
-        @Html.ActionLink("Details", "Details", new { id = item.pId }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.pId })
+        @Html.ActionLink("Edit", "Edit", new { id = item.pupil.pId }) |
+        @Html.ActionLink("Details", "Details", new { id = item.pupil.pId }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.pupil.pId })
     </td>
 </tr>
 }

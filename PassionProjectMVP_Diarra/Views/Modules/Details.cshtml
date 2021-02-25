@@ -1,7 +1,8 @@
-﻿@model PassionProjectMVP_Diarra.Models.Module
+﻿@model PassionProjectMVP_Diarra.Models.ModelViews.ShowModule
 
 @{
     ViewBag.Title = "Details";
+    var temp = @Html.DisplayFor(model => model.classe.className).ToHtmlString();
 }
 
 <h2>Details</h2>
@@ -11,48 +12,51 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Classe.className)
+            @Html.DisplayNameFor(model => model.classe.className)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Classe.className)
+            
+            @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
+
+           @*@ @Html.DisplayFor(model => model.classe.className)*@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.moduleName)
+            @Html.DisplayNameFor(model => model.module.moduleName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.moduleName)
+            @Html.DisplayFor(model => model.module.moduleName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.description)
+            @Html.DisplayNameFor(model => model.module.description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.description)
+            @Html.DisplayFor(model => model.module.description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.delivery)
+            @Html.DisplayNameFor(model => model.module.delivery)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.delivery)
+            @Html.DisplayFor(model => model.module.delivery)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.fees)
+            @Html.DisplayNameFor(model => model.module.fees)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.fees)
+            @Html.DisplayFor(model => model.module.fees)
         </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.modId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.module.modId }) |
     @Html.ActionLink("Back to Module List", "ModuleList")
 </p>

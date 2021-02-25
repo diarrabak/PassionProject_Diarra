@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using PassionProjectMVP_Diarra.Models;
+using PassionProjectMVP_Diarra.Models.ModelViews;
 
 namespace PassionProjectMVP_Diarra.Controllers
 {
@@ -30,17 +31,44 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// </summary>
         /// <returns> The list of pupils with the first name, last name, classe and location from the database</returns>
 
-        [ResponseType(typeof(IEnumerable<PupilDto>))]
+        [ResponseType(typeof(IEnumerable<ShowPupil>))]
+        //[ResponseType(typeof(IEnumerable<PupilDto>))]
         public IHttpActionResult GetPupils()
         {
             
             //return (IHttpActionResult)db.Pupils.ToList();
             List<Pupil> Pupils = db.Pupils.ToList();
-            List<PupilDto> PupilDtos = new List<PupilDto> { };
+
+            List<ShowPupil> PupilDtos = new List<ShowPupil> { };
+            //List<PupilDto> PupilDtos = new List<PupilDto> { };
 
             //Here you can select the information to be transfered to the  API
             foreach (var Pupil in Pupils)
             {
+                ShowPupil pupil = new ShowPupil();
+
+                Classe classe = db.Classes.Where(c => c.Pupils.Any(m => m.pId == Pupil.pId)).FirstOrDefault();
+
+                ClasseDto parentClass = new ClasseDto
+                {
+                    classId = classe.classId,
+                    className = classe.className,
+                    startDate = classe.startDate,
+                    endDate = classe.endDate
+                };
+
+                Location location = db.Locations.Where(l => l.Pupils.Any(m => m.pId == Pupil.pId)).FirstOrDefault();
+
+                LocationDto locationPlace = new LocationDto
+                {
+                    locId = location.locId,
+                    city = location.city,
+                    country = location.country,
+                    incomeRange=location.incomeRange
+                };
+
+               
+
                 PupilDto NewPupil = new PupilDto
                 {
                     pId = Pupil.pId,
@@ -50,20 +78,20 @@ namespace PassionProjectMVP_Diarra.Controllers
                     classId = Pupil.classId,
                     locId = Pupil.locId
                 };
-                PupilDtos.Add(NewPupil);
+
+                pupil.pupil = NewPupil;
+                pupil.classe = parentClass;
+                pupil.location = locationPlace;
+                PupilDtos.Add(pupil);
             }
 
             return Ok(PupilDtos);
         }
 
-        /// <summary>
-        /// <example>GET: api/api/PupilData/FindPupil/1</example>
-        /// <example>GET: api/api/PupilData/FindPupil/2</example>
-        /// </summary>
-        /// <param name="id"> The parameter being the ID of the pupil</param>
-        /// <returns> This method returns the pupil which id is given</returns>
-        // 
-
+       /// <summary>
+       /// This method gives the full list of classes
+       /// </summary>
+       /// <returns></returns>
         [ResponseType(typeof(IEnumerable<ClasseDto>))]
         public IHttpActionResult GetClasses()
         {
@@ -84,6 +112,34 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
 
             return Ok(ClasseDtos);
+        }
+
+        /// <summary>
+        /// This methods gives all the locations
+        /// </summary>
+        /// <returns>Location list</returns>
+        [ResponseType(typeof(IEnumerable<LocationDto>))]
+        public IHttpActionResult GetLocations()
+        {
+
+            //return (IHttpActionResult)db.Locations.ToList();
+            List<Location> Locations = db.Locations.ToList();
+            List<LocationDto> LocationDtos = new List<LocationDto> { };
+
+            //Here you can select the information to be transfered to the  API
+            foreach (var Location in Locations)
+            {
+                LocationDto NewLocation = new LocationDto
+                {
+                    locId = Location.locId,
+                    city = Location.city,
+                    country = Location.country,
+                    incomeRange = Location.incomeRange
+                };
+                LocationDtos.Add(NewLocation);
+            }
+
+            return Ok(LocationDtos);
         }
 
         /// <summary>
@@ -116,6 +172,68 @@ namespace PassionProjectMVP_Diarra.Controllers
 
             return Ok(pupilTemp);
         }
+
+        /// <summary>
+        /// This method provides the classe to which the current module belongs
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
+        [ResponseType(typeof(ClasseDto))]
+        public IHttpActionResult GetPupilClasse(int id)
+        {
+
+            //Find the classe to which the current pupil belongs
+            Classe classe = db.Classes.Where(c => c.Pupils.Any(p =>p.pId == id)).FirstOrDefault();
+
+            //In case this classe does not exist
+            if (classe == null)
+            {
+
+                return NotFound();
+            }
+
+            ClasseDto parentClass = new ClasseDto
+            {
+                classId = classe.classId,
+                className = classe.className,
+                startDate = classe.startDate,
+                endDate = classe.endDate
+            };
+
+            return Ok(parentClass);
+        }
+
+        /// <summary>
+        /// This method gives the location of the current pupil
+        /// </summary>
+        /// <param name="id">Id of the pupil</param>
+        /// <returns>Pupil's location</returns>
+        [ResponseType(typeof(ClasseDto))]
+        public IHttpActionResult GetPupilLocation(int id)
+        {
+
+            //Find the classe to which the current pupil belongs
+            Location location = db.Locations.Where(l => l.Pupils.Any(p => p.pId == id)).FirstOrDefault();
+
+            //In case this classe does not exist
+            if (location == null)
+            {
+
+                return NotFound();
+            }
+
+            LocationDto parentLocation = new LocationDto
+            {
+                locId = location.locId,
+                city = location.city,
+                country = location.country,
+                incomeRange = location.incomeRange
+            };
+
+            return Ok(parentLocation);
+        }
+
 
         /// <summary>
         /// This method permits to update the selected pupil
@@ -178,7 +296,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
 
             db.Pupils.Add(pupil);
-            db.SaveChanges();
+            //db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = pupil.pId }, pupil);
         }

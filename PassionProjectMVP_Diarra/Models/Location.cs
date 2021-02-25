@@ -14,6 +14,8 @@ namespace PassionProjectMVP_Diarra.Models
         public string city { get; set; }
         public string country { get; set; }
         public string incomeRange { get; set; }
+        //A location can have many pupils
+        public ICollection<Pupil> Pupils { get; set; }
     }
 
     //This class is used to transfer information about a location.

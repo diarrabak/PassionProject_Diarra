@@ -57,6 +57,33 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
+        /// This method gets all the pupils of module
+        /// </summary>
+        /// <param name="id">ID of the module</param>
+        /// <returns>Pupil list</returns>
+        [ResponseType(typeof(IEnumerable<PupilDto>))]
+        public IHttpActionResult GetLocationPupils(int id)
+        {
+            List<Pupil> pupils = db.Pupils.Where(p => p.locId == id).ToList();
+            List<PupilDto> PupilDtos = new List<PupilDto> { };
+
+            //Here you can choose which information is exposed to the API
+            foreach (var pupil in pupils)
+            {
+                PupilDto NewPupil = new PupilDto
+                {
+                    pId = pupil.pId,
+                    firstName = pupil.firstName,
+                    lastName = pupil.lastName,
+                    age = pupil.age,
+                };
+                PupilDtos.Add(NewPupil);
+            }
+
+            return Ok(PupilDtos);
+        }
+
+        /// <summary>
         /// <example>GET: api/api/LocationData/FindLocation/1</example>
         /// <example>GET: api/api/LocationData/FindLocation/2</example>
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PassionProjectMVP_Diarra.Models.ModelViews;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -69,7 +70,7 @@ namespace PassionProjectMVP_Diarra.Models
 
 
         /// <summary>
-        /// This method provides details about the selected location which ID is given
+        /// This method provides details about the selected location which ID is given and its pupils
         /// <example>GET: Locations/Details/5</example>
         /// <example>GET: Locations/Details/3</example>
         /// </summary>
@@ -78,20 +79,35 @@ namespace PassionProjectMVP_Diarra.Models
         // 
         public ActionResult Details(int id)
         {
-            
+            ShowLocation showLocation = new ShowLocation();
+
             string url = "Locationdata/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             
             if (response.IsSuccessStatusCode)
             {
                 //Put data into player data transfer object
-                Location SelectedLocation = response.Content.ReadAsAsync<Location>().Result;
-                return View(SelectedLocation);
+                LocationDto SelectedLocation = response.Content.ReadAsAsync<LocationDto>().Result;
+                showLocation.location=SelectedLocation;
             }
             else
             {
                 return RedirectToAction("Error");
             }
+
+             url = "LocationData/GetLocationPupils/" + id;
+             response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<PupilDto> SelectedPupils = response.Content.ReadAsAsync<IEnumerable<PupilDto>>().Result;
+                showLocation.pupils=SelectedPupils;
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+            return View(showLocation);
+
         }
 
         // GET: Locations/Create
@@ -122,8 +138,8 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Details", new { id = newLocation.locId });
-               // return RedirectToAction("LocationList");
+                //return RedirectToAction("Details", new { id = (int)newLocation.locId });
+                return RedirectToAction("LocationList");
             }
             else
             {
@@ -181,7 +197,7 @@ namespace PassionProjectMVP_Diarra.Models
             if (response.IsSuccessStatusCode)
             {
 
-                return RedirectToAction("Details", new { id = id });
+                return RedirectToAction("Details", new { id = currentLocation.locId });
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PassionProjectMVP_Diarra.Models.ModelViews;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -16,7 +17,7 @@ namespace PassionProjectMVP_Diarra.Models
     {
         //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
 
-        private PassionDataContext db = new PassionDataContext();
+        //private PassionDataContext db = new PassionDataContext();
 
         /*All the controllers can be automatically generated from:
         Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->
@@ -45,27 +46,27 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
         /// <summary>
-        /// This method displays the list of all modules
+        /// This method displays the list of all modules and the classes they belong
         /// <example>Modules/ModuleList</example>
         /// </summary>
         /// <returns></returns>
         // GET: Modules
         public ActionResult ModuleList()
         {
-            var modules = db.Modules.Include(m => m.Classe);
-            return View(modules.ToList());
+            //var modules = db.Modules.Include(m => m.Classe);
+            //return View(modules.ToList());
 
-            //    string url = "ModuleData/GetModules";
-            //    HttpResponseMessage response = client.GetAsync(url).Result;
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        IEnumerable<Module> SelectedModules = response.Content.ReadAsAsync<IEnumerable<Module>>().Result;
-            //        return View(SelectedModules);
-            //    }
-            //    else
-            //    {
-            //        return RedirectToAction("Error");
-            //    }
+            string url = "ModuleData/GetModules";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<ShowModule> SelectedModules = response.Content.ReadAsAsync<IEnumerable<ShowModule>>().Result;
+                return View(SelectedModules);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         /// <summary>
@@ -78,32 +79,38 @@ namespace PassionProjectMVP_Diarra.Models
         // 
         public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Module module = db.Modules.Find(id);
-            if (module == null)
-            {
-                return HttpNotFound();
-            }
-            return View(module);
+            ShowModule showModule = new ShowModule();
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //Module module = db.Modules.Find(id);
+            //if (module == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            //return View(module);
 
 
-            //string url = "Moduledata/FindModule/" + id;
-            //HttpResponseMessage response = client.GetAsync(url).Result;
-            ////Can catch the status code (200 OK, 301 REDIRECT), etc.
-            ////Debug.WriteLine(response.StatusCode);
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    //Put data into player data transfer object
-            //    Module SelectedModule = response.Content.ReadAsAsync<Module>().Result;
-            //    return View(SelectedModule);
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Error");
-            //}
+            string url = "ModuleData/FindModule/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into player data transfer object
+                ModuleDto SelectedModule = response.Content.ReadAsAsync<ModuleDto>().Result;
+                showModule.module=SelectedModule;
+                url = "ModuleData/GetModuleClasse/" + id;
+                response = client.GetAsync(url).Result;
+                ClasseDto SelectedClasse = response.Content.ReadAsAsync<ClasseDto>().Result;
+                showModule.classe = SelectedClasse;
+                return View(showModule);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
 
@@ -114,8 +121,17 @@ namespace PassionProjectMVP_Diarra.Models
         // GET: Modules/Create
         public ActionResult Create()
         {
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className");
-            return View();
+            EditModule editModule = new EditModule();
+            string url = "ModuleData/GetClasses";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            
+            IEnumerable<ClasseDto> SelectedClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
+            editModule.allClasses = SelectedClasses;
+            return View(editModule);
+            
+           
+            //ViewBag.classId = new SelectList(db.Classes, "classId", "className");
+            //return View();
         }
 
         /// <summary>
@@ -131,63 +147,70 @@ namespace PassionProjectMVP_Diarra.Models
         [ValidateAntiForgeryToken]
         public ActionResult Create( Module module)//newModule
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            //    db.Modules.Add(module);
+            //    db.SaveChanges();
+            //    return RedirectToAction("ModuleList");
+            //}
+
+            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
+            //return View(module);
+
+            string url = "ModuleData/AddModule";
+            HttpContent content = new StringContent(jss.Serialize(module));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
             {
-                db.Modules.Add(module);
-                db.SaveChanges();
+
+                int modid = response.Content.ReadAsAsync<int>().Result;
                 return RedirectToAction("ModuleList");
+                //return RedirectToAction("Details", new { id = modid });
             }
-
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            return View(module);
-
-            //string url = "ModuleData/AddModule";
-            //HttpContent content = new StringContent(jss.Serialize(newModule));
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            //HttpResponseMessage response = client.PostAsync(url, content).Result;
-
-            //if (response.IsSuccessStatusCode)
-            //{
-
-            //    int modid = response.Content.ReadAsAsync<int>().Result;
-            //    return RedirectToAction("Details", new { id = modid });
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Error");
-            //}
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         // GET: Modules/Edit/5
         public ActionResult Edit(int id)
         {
-            //string url = "ModuleData/FindModule/" + id;
-            //HttpResponseMessage response = client.GetAsync(url).Result;
-            ////Can catch the status code (200 OK, 301 REDIRECT), etc.
-            ////Debug.WriteLine(response.StatusCode);
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    //Put data into player data transfer object
-            //    Module SelectedPlayer = response.Content.ReadAsAsync<Module>().Result;
-            //    return View(SelectedPlayer);
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Error");
-            //}
+            EditModule editModule = new EditModule();
+            string url = "ModuleData/FindModule/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into player data transfer object
+                ModuleDto selectedModule = response.Content.ReadAsAsync<ModuleDto>().Result;
+                editModule.module= selectedModule;
+                url = "ModuleData/GetClasses";
+                response = client.GetAsync(url).Result;
+                IEnumerable<ClasseDto> allClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
+                editModule.allClasses = allClasses;
+                return View(editModule);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
 
 
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Module module = db.Modules.Find(id);
-            if (module == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            return View(module);
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //Module module = db.Modules.Find(id);
+            //if (module == null)
+            //{
+            //    return HttpNotFound();
+            //}
+            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
+            //return View(module);
         }
 
 
@@ -207,32 +230,33 @@ namespace PassionProjectMVP_Diarra.Models
         public ActionResult Edit(int id, Module module) //currentModule
         {
 
-            //string url = "ModuleData/UpdateModule/" + id;
+            string url = "ModuleData/UpdateModule/" + id;
 
-            //HttpContent content = new StringContent(jss.Serialize(currentModule));
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            //HttpResponseMessage response = client.PostAsync(url, content).Result;
+            HttpContent content = new StringContent(jss.Serialize(module));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
 
-            //if (response.IsSuccessStatusCode)
-            //{
-
-            //    return RedirectToAction("Details", new { id = id });
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Error");
-            //}
-
-
-            if (ModelState.IsValid)
+            if (response.IsSuccessStatusCode)
             {
-                db.Entry(module).State = EntityState.Modified;
-                db.SaveChanges();
-                //return RedirectToAction("ModuleList");
-                return RedirectToAction("Details", new { id = module.modId });
+
+                // return RedirectToAction("Details", new { id = module.modId });
+                return RedirectToAction("ModuleList");
             }
-            ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            return View(module);
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    db.Entry(module).State = EntityState.Modified;
+            //    db.SaveChanges();
+            //    //return RedirectToAction("ModuleList");
+            //    return RedirectToAction("Details", new { id = module.modId });
+            //}
+            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
+            //return View(module);
         }
 
             // GET: Modules/Delete/5
