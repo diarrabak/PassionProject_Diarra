@@ -7,62 +7,65 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>Classe</h4>
-    <hr />
-    <table class="table">
-        <tr>
-            <th colspan="2">
-                @Html.DisplayNameFor(model => model.classe.className)
-            </th>
+<div class="row">
+    <h4>@Model.classe.className</h4>
+    <div class="col-sm-12 col-md-6">
+        <dl class="dl-horizontal">
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.classe.className)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.classe.className)
+                </dd>
+            </div>
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.classe.startDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.classe.startDate)
+                </dd>
+            </div>
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.classe.endDate)
+                </dt>
 
-            <th>
-                @Html.DisplayNameFor(model => model.classe.startDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.classe.endDate)
-            </th>
-        </tr>
-        <tr>
-            <td colspan="2">
-                @Html.DisplayFor(model => model.classe.className)
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.classe.startDate)
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.classe.endDate)
-            </td>
-
-        </tr>
-        </table>
-       
-            <ul >
-                List of modules in @Model.classe.className class
+                <dd>
+                    @Html.DisplayFor(model => model.classe.endDate)
+                </dd>
+            </div>
+        </dl>
             
-                    @foreach (var module in Model.allModules)
-                    {
-                        var temp = @Html.DisplayFor(modelItem => module.moduleName).ToHtmlString();
-                        <li>
-                            @Html.ActionLink(temp, "Index", "Modules/Details/" + module.modId)
-                        </li>
-                    }
-            </ul>
-            <ul>
-                    List of pupils in @Model.classe.className class
-               
-                    @foreach (var pupil in Model.allPupils)
-                    {
-                        var temp = @Html.DisplayFor(modelItem => pupil.firstName).ToHtmlString() + " " + @Html.DisplayFor(modelItem => pupil.lastName).ToHtmlString();
-                        <li>
-                            @Html.ActionLink(temp, "Index", "Pupils/Details/" + pupil.pId)
-                        </li>
-                    }
-            </ul>
-          
-
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.classe.classId }) |
-    @Html.ActionLink("Back to Classe List", "ClasseList")
-</p>
+    <div class="col-sm-12 col-md-6">
+        <ul>
+            List of modules in @Model.classe.className class
+
+            @foreach (var module in Model.allModules)
+            {
+                var temp = @Html.DisplayFor(modelItem => module.moduleName).ToHtmlString();
+                <li>
+                    @Html.ActionLink(temp, "Index", "Modules/Details/" + module.modId)
+                </li>
+            }
+        </ul>
+        <ul>
+            List of pupils in @Model.classe.className class
+
+            @foreach (var pupil in Model.allPupils)
+            {
+                var temp = @Html.DisplayFor(modelItem => pupil.firstName).ToHtmlString() + " " + @Html.DisplayFor(modelItem => pupil.lastName).ToHtmlString();
+                <li>
+                    @Html.ActionLink(temp, "Index", "Pupils/Details/" + pupil.pId)
+                </li>
+            }
+        </ul>
+
+        </div>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.classe.classId }) |
+        @Html.ActionLink("Back to Classe List", "ClasseList")
+    </p>

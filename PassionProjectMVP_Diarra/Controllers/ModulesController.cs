@@ -15,10 +15,6 @@ namespace PassionProjectMVP_Diarra.Models
 {
     public class ModulesController : Controller
     {
-        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
-
-        //private PassionDataContext db = new PassionDataContext();
-
         /*All the controllers can be automatically generated from:
         Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->
         Add->Select the right Model and database, then give a name to the controller. Keep the 3 fields of Views ticked. 
@@ -37,7 +33,7 @@ namespace PassionProjectMVP_Diarra.Models
                 AllowAutoRedirect = false
             };
             client = new HttpClient(handler);
-            //change this to match your own local port number
+            //Port number to be customized
             client.BaseAddress = new Uri("https://localhost:44327/api/");
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
@@ -49,12 +45,10 @@ namespace PassionProjectMVP_Diarra.Models
         /// This method displays the list of all modules and the classes they belong
         /// <example>Modules/ModuleList</example>
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of modules and their classes</returns>
         // GET: Modules
         public ActionResult ModuleList()
         {
-            //var modules = db.Modules.Include(m => m.Classe);
-            //return View(modules.ToList());
 
             string url = "ModuleData/GetModules";
             HttpResponseMessage response = client.GetAsync(url).Result;
@@ -70,37 +64,27 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
         /// <summary>
-        /// This method shows the information in the selected module which ID is given
+        /// This method shows the information of the selected module which ID is given
         /// <example>GET: Modules/Details/5</example>
         /// <example>GET: Modules/Details/3</example>
         /// </summary>
         /// <param name="id">ID of selected module</param>
-        /// <returns></returns>
+        /// <returns>Shows details of the selected module</returns>
         // 
         public ActionResult Details(int id)
         {
             ShowModule showModule = new ShowModule();
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Module module = db.Modules.Find(id);
-            //if (module == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(module);
-
-
+          
+            //Get the current module
             string url = "ModuleData/FindModule/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 ModuleDto SelectedModule = response.Content.ReadAsAsync<ModuleDto>().Result;
                 showModule.module=SelectedModule;
+
+                //Get the classe to which the current module belongs to
                 url = "ModuleData/GetModuleClasse/" + id;
                 response = client.GetAsync(url).Result;
                 ClasseDto SelectedClasse = response.Content.ReadAsAsync<ClasseDto>().Result;
@@ -117,11 +101,13 @@ namespace PassionProjectMVP_Diarra.Models
         /// <summary>
         /// This method displays information of the module to create
         /// </summary>
-        /// <returns></returns>
-        // GET: Modules/Create
+        /// <returns>Shows the information required for the module to be edited</returns>
+       
         public ActionResult Create()
         {
             EditModule editModule = new EditModule();
+
+            //Get all the classes for the dropdown list
             string url = "ModuleData/GetClasses";
             HttpResponseMessage response = client.GetAsync(url).Result;
             
@@ -129,34 +115,20 @@ namespace PassionProjectMVP_Diarra.Models
             editModule.allClasses = SelectedClasses;
             return View(editModule);
             
-           
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className");
-            //return View();
         }
 
         /// <summary>
         /// This method permits to create and save a new module
         /// <example>POST: Modules/Create</example>
         /// </summary>
-        /// <param name="module"></param>
-        /// <returns></returns>
-        // 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <param name="module">Module to be added to the database</param>
+        /// <returns>Creates and saves the new module to the database</returns>
+              
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create( Module module)//newModule
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Modules.Add(module);
-            //    db.SaveChanges();
-            //    return RedirectToAction("ModuleList");
-            //}
-
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            //return View(module);
-
+            //Adding the new module to the database
             string url = "ModuleData/AddModule";
             HttpContent content = new StringContent(jss.Serialize(module));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -164,10 +136,7 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-
-                //int modid = response.Content.ReadAsAsync<int>().Result;
                 return RedirectToAction("ModuleList");
-                //return RedirectToAction("Details", new { id = module.modId });
             }
             else
             {
@@ -175,19 +144,29 @@ namespace PassionProjectMVP_Diarra.Models
             }
         }
 
-        // GET: Modules/Edit/5
+        /// <summary>
+        /// Thhis method permits to display the information of the module to be updated
+        /// <example>Modules/Edit/1</example>
+        /// <example>Modules/Edit/5</example>
+        /// </summary>
+        /// <param name="id">ID of the selected module</param>
+        /// <returns>displays module for editing</returns>
+
         public ActionResult Edit(int id)
         {
             EditModule editModule = new EditModule();
+
+            //Getting the module from the database
             string url = "ModuleData/FindModule/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
                 //Put data into player data transfer object
                 ModuleDto selectedModule = response.Content.ReadAsAsync<ModuleDto>().Result;
                 editModule.module= selectedModule;
+
+                //Getting from the database the Classe object to which the current module belongs to
                 url = "ModuleData/GetClasses";
                 response = client.GetAsync(url).Result;
                 IEnumerable<ClasseDto> allClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
@@ -199,18 +178,6 @@ namespace PassionProjectMVP_Diarra.Models
                 return RedirectToAction("Error");
             }
 
-
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Module module = db.Modules.Find(id);
-            //if (module == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            //return View(module);
         }
 
 
@@ -220,11 +187,9 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>POST: Modules/Edit/4</example>
         /// </summary>
         /// <param name="id"> The ID of the selected module</param>
-        /// <param name="module"></param>
-        /// <returns></returns>
-        // 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <param name="module">The selected module to be edited</param>
+        /// <returns>Updates and saves to the database the selected module</returns>
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Module module) //currentModule
@@ -247,29 +212,24 @@ namespace PassionProjectMVP_Diarra.Models
                 return RedirectToAction("Error");
             }
 
-
-            //if (ModelState.IsValid)
-            //{
-            //    db.Entry(module).State = EntityState.Modified;
-            //    db.SaveChanges();
-            //    //return RedirectToAction("ModuleList");
-            //    return RedirectToAction("Details", new { id = module.modId });
-            //}
-            //ViewBag.classId = new SelectList(db.Classes, "classId", "className", module.classId);
-            //return View(module);
         }
 
-            // GET: Modules/Delete/5
 
-            public ActionResult Delete(int id)
+        /// <summary>
+        /// This method shows the selected module 
+        /// <example>Modules/Delete/1</example>
+        /// <example>Modules/Delete/2</example>
+        /// </summary>
+        /// <param name="id">ID of the selected module</param>
+        /// <returns>Shows the selected module to the view</returns>
+        public ActionResult Delete(int id)
         {
+            //Get the selected module from the database
             string url = "ModuleData/FindModule/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+          
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 Module SelectedModule = response.Content.ReadAsAsync<Module>().Result;
                 return View(SelectedModule);
             }
@@ -286,14 +246,15 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>POST: Modules/Delete/2</example>
         /// </summary>
         /// <param name="id">Id of the selected module</param>
-        /// <returns></returns>
+        /// <returns>Removes the selected module from the database</returns>
         // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //Remove the current module from the database
             string url = "ModuleData/DeleteModule/" + id;
-            //post body is empty
+            
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
            

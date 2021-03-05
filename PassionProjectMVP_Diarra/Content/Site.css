@@ -31,3 +31,25 @@ ul {
     margin-left: -30px;
     font-size: 1.1em;
 }
+
+.table {
+    width:1200px;
+}
+   tr {
+        height:5em;
+        
+    }
+tr td, tr th{
+    text-align: center;
+}
+.dl-horizontal div, h4 {
+    margin: 2em 0;
+    
+}
+h4 {
+    text-align:center;
+    border-bottom:double red;
+}
+.pupil div, .module div {
+    margin-left: 35%;
+}

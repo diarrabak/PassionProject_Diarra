@@ -14,33 +14,27 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class ClasseDataController : ApiController
     {
-        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
-
-        //This variable is our database access point
+        //This variable is the access to my database which contains classes, modules,locations and pupils
         private PassionDataContext db = new PassionDataContext();
 
-        //This code is mostly scaffolded from the base models and database context
-        //New > WebAPIController with Entity Framework Read/Write Actions
-        //Choose model "Classe"
-        //Choose context "Passion Data Context"
-        //Note: The base scaffolded code needs many improvements for a fully
-        //functioning MVP.
 
         /// <summary>
-        /// This method process the list of the Classes and return in form of list
+        /// This method gets from the database the list of the all Classes
         /// <example> GET: api/ClasseData/GetClasses </example>
         /// </summary>
-        /// <returns> The list of Classes with the first name, last name, classe and location from the database</returns>
+        /// <returns> The list of Classes from the database</returns>
 
         [ResponseType(typeof(IEnumerable<ClasseDto>))]
         public IHttpActionResult GetClasses()
         {
 
-            //return (IHttpActionResult)db.Classes.ToList();
+            //Getting the list of Classe objects from the databse
             List<Classe> Classes = db.Classes.ToList();
+
+            //Here a data transfer model is used to keep only the information to be deisplayed about a Classe object
             List<ClasseDto> ClasseDtos = new List<ClasseDto> { };
 
-            //Here you can select the information to be transfered to the  API
+            //Transfering Classe object to data transfer object
             foreach (var Classe in Classes)
             {
                 ClasseDto NewClasse = new ClasseDto
@@ -57,19 +51,20 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
+        /// This method allows getting all the modules present in a Classe object
         /// <example>GET: api/ClasseData/GetClasseModules/1</example>
         /// <example>GET: api/ClasseData/GetClasseModules/2</example>
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID of the selected Classe object</param>
         /// <returns> The list of modules in the class which ID is given</returns>
 
         [ResponseType(typeof(IEnumerable<ModuleDto>))]
         public IHttpActionResult GetClasseModules(int id)
         {
+            //All modules which classId is the same as the current Classe object classId
             List<Module> Modules = db.Modules.Where(p => p.classId == id).ToList();
             List<ModuleDto> ModuleDtos = new List<ModuleDto> { };
 
-            //Here you can choose which information is exposed to the API
             foreach (var Module in Modules)
             {
                 ModuleDto NewModule = new ModuleDto
@@ -89,19 +84,20 @@ namespace PassionProjectMVP_Diarra.Controllers
 
 
         /// <summary>
+        /// This method gets all the pupils registered for the current Classe (course)
         /// <example>GET: api/ClasseData/GetClassePupils/1</example>
         /// <example>GET: api/ClasseData/GetClassePupils/1</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>The list of pupils in the class which ID is given</returns>
+        /// <param name="id">ID of the selected Classe object</param>
+        /// <returns>The list of pupils in the Classe object which ID is given</returns>
 
         [ResponseType(typeof(IEnumerable<PupilDto>))]
         public IHttpActionResult GetClassePupils(int id)
         {
+            //List of all pupils registered in the current Classe (course)
             List<Pupil> Pupils = db.Pupils.Where(p => p.classId == id).ToList();
             List<PupilDto> PupilDtos = new List<PupilDto> { };
 
-            //Here you can choose which information is exposed to the API
             foreach (var Pupil in Pupils)
             {
                 PupilDto NewPupil = new PupilDto
@@ -123,11 +119,12 @@ namespace PassionProjectMVP_Diarra.Controllers
 
 
         /// <summary>
+        /// This method allows getting the specified Classe object
         /// <example>GET: api/ClasseData/FindClasse/1</example>
         /// <example>GET: api/ClasseData/FindClasse/2</example>
         /// </summary>
-        /// <param name="id"> The parameter being the ID of the Classe</param>
-        /// <returns> This method returns the Classe which id is given</returns>
+        /// <param name="id"> ID of the selected Classe</param>
+        /// <returns> This method returns the Classe object which id is given</returns>
         // 
         [HttpGet]
         [ResponseType(typeof(ClasseDto))]
@@ -139,6 +136,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             {
                 return NotFound();
             }
+            //A data transfer object model used to show only most important information about the Classe
             ClasseDto ClasseTemp = new ClasseDto
             {
                 classId = Classe.classId,
@@ -151,13 +149,13 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
-        /// This method permits to update the selected Classe
+        /// This method permits to update the selected Classe object
         /// <example>api/ClasseData/UpdateClasse/1</example>
         /// <example>api/ClasseData/UpdateClasse/2</example>
         /// </summary>
         /// <param name="id">The ID of the Classe</param>
-        /// <param name="Classe"></param>
-        /// <returns></returns>
+        /// <param name="Classe">The current Classe Object itself</param>
+        /// <returns>Saves the current Classe with new values to the database</returns>
         // PUT: 
         [HttpPost]
         [ResponseType(typeof(void))]
@@ -195,7 +193,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
-        /// This method permits to add a new Classe to the database
+        /// This method permits to add a new Classe object to the database
         /// <example>POST: api/ClasseData/AddClasse</example>
         /// </summary>
         /// <param name="Classe"></param>
@@ -217,7 +215,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
-        /// This method deletes the Classe which ID is given
+        /// This method deletes the Classe object which ID is given
         /// <example>api/ClasseData/DeleteClasse/1</example>
         /// <example>api/ClasseData/DeleteClasse/3</example>
         /// </summary>

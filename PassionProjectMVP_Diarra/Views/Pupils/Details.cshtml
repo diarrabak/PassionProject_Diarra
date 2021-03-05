@@ -11,56 +11,66 @@
 <div>
     <h4>Pupil</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.classe.className)
-        </dt>
+    <dl class="dl-horizontal pupil">
 
-        <dd>
-            @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
-            @*@Html.DisplayFor(model => model.classe.className)*@
-        </dd>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.pupil.firstName)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.location.city)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.pupil.firstName)
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.pupil.lastName)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.location.city)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.location.country)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.pupil.lastName)
+            </dd>
+        </div>
 
-        <dd>
-            @Html.ActionLink(tempLoc, "Index", "Locations/Details/" + Model.location.locId)
-            @*@Html.DisplayFor(model => model.location.country)*@
-        </dd>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.classe.className)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.pupil.firstName)
-        </dt>
+            <dd>
+                @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
+                @*@Html.DisplayFor(model => model.classe.className)*@
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.location.city)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.pupil.firstName)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.location.city)
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.location.country)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.pupil.lastName)
-        </dt>
+            <dd>
+                @Html.ActionLink(tempLoc, "Index", "Locations/Details/" + Model.location.locId)
+                @*@Html.DisplayFor(model => model.location.country)*@
+            </dd>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.pupil.lastName)
-        </dd>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.pupil.age)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.pupil.age)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.pupil.age)
-        </dd>
-
+            <dd>
+                @Html.DisplayFor(model => model.pupil.age)
+            </dd>
+        </div>
     </dl>
 </div>
 <p>

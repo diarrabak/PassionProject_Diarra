@@ -17,7 +17,7 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class PupilsController : Controller
     {
-        private PassionDataContext db = new PassionDataContext();
+        //private PassionDataContext db = new PassionDataContext();
 
         /*All the controllers can be automatically generated from:
         Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->
@@ -42,18 +42,16 @@ namespace PassionProjectMVP_Diarra.Controllers
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
 
-
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ACCESS_TOKEN);
-
         }
 
-
-        // GET: Pupils
+        /// <summary>
+        /// This method displays the list of all pupils with ther Classes and Locations
+        /// <example>Pupils/PupilList</example>
+        /// </summary>
+        /// <returns>Pupils list with Classes and Locations</returns>
         public ActionResult PupilList()
         {
-            //var Pupils = db.Pupils.Include(m => m.Classe);
-            //return View(Pupils.ToList());
-
+            //Getting the list of all pupils with their information
             string url = "PupilData/GetPupils";
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -67,35 +65,35 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
         }
 
-        // GET: Pupils/Details/5
+        /// <summary>
+        /// This method shows the information of the selected pupil
+        /// <example>Pupils/Details/1</example>
+        /// <example>Pupils/Details/4</example>
+        /// </summary>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>Details of the Pupil whose ID is given</returns>
+        
         public ActionResult Details(int id)
         {
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Pupil Pupil = db.Pupils.Find(id);
-            //if (Pupil == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Pupil);
+            
             ShowPupil showPupil = new ShowPupil();
+
+            //Get the current pupil from the database
             string url = "Pupildata/FindPupil/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 PupilDto SelectedPupil = response.Content.ReadAsAsync<PupilDto>().Result;
                 showPupil.pupil=SelectedPupil;
 
+                //Get the Classe to which the pupil belongs
                 url = "PupilData/GetPupilClasse/" + id;
                 response = client.GetAsync(url).Result;
                 ClasseDto SelectedClasse = response.Content.ReadAsAsync<ClasseDto>().Result;
                 showPupil.classe = SelectedClasse;
 
+                //Get the location of the selected pupil
                 url = "PupilData/GetPupilLocation/" + id;
                 response = client.GetAsync(url).Result;
                 LocationDto SelectedLocation = response.Content.ReadAsAsync<LocationDto>().Result;
@@ -109,11 +107,15 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
         }
 
-        // GET: Pupils/Create
+        /// <summary>
+        /// This method displays the field required to create a new pupil
+        /// <example>// GET: Pupils/Create</example>
+        /// </summary>
+        /// <returns>Shows the fields required for the new pupil</returns>
+
         public ActionResult Create()
         {
-            // ViewBag.classId = new SelectList(db.Pupils, "classId", "className");
-            //return View();
+            //Get all the Classes for dropdown list
             EditPupil editPupil = new EditPupil();
             string url = "PupilData/GetClasses";
             HttpResponseMessage response = client.GetAsync(url).Result;
@@ -121,6 +123,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             IEnumerable<ClasseDto> SelectedClasses = response.Content.ReadAsAsync<IEnumerable<ClasseDto>>().Result;
             editPupil.allClasses = SelectedClasses;
 
+            //Get all the locations for dropdown list
             url = "PupilData/GetLocations";
             response = client.GetAsync(url).Result;
            
@@ -130,23 +133,19 @@ namespace PassionProjectMVP_Diarra.Controllers
             return View(editPupil);
         }
 
-        // POST: Pupils/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// This method creates a new pupil object
+        /// </summary>
+        /// <param name="Pupil">Pupil to be created</param>
+        /// <returns>Creates and saves the new pupil to the database</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Pupil Pupil)//newPupil
         {
-            //if (ModelState.IsValid)
-            //{
-            //    db.Pupils.Add(Pupil);
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-
-            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
-            //return View(Pupil);
+           
             Debug.WriteLine(Pupil.firstName + " " +Pupil.lastName+" "+Pupil.classId+" "+Pupil.locId+" "+ Pupil.pId);
+            
+            //Add a new pupil to the database
             string url = "PupilData/AddPupil";
             HttpContent content = new StringContent(jss.Serialize(Pupil));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -155,9 +154,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             if (response.IsSuccessStatusCode)
             {
 
-                //int modid = response.Content.ReadAsAsync<int>().Result;
-                //Debug.WriteLine(Pupil.pId + "and" + modid);
-                //return RedirectToAction("Details", new { id = modid });
+                //Redirect to the PupilList
                 return RedirectToAction("PupilList");
             }
             else
@@ -166,17 +163,24 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
         }
 
-        // GET: Pupils/Edit/5
+        /// <summary>
+        /// This method allows to show the information of the selected pupil to be edited
+        /// <example>Pupils/Edit/4</example>
+        /// <example>Pupils/Edit/2</example>
+        /// </summary>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>Shows the selected pupil in the view</returns>
+
         public ActionResult Edit(int id)
         {
             EditPupil newPupil = new EditPupil();
+
+            //Get the selected pupil from the database
             string url = "PupilData/FindPupil/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+           
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 PupilDto SelectedPupil = response.Content.ReadAsAsync<PupilDto>().Result;
                 newPupil.pupil = SelectedPupil;
             }
@@ -185,6 +189,7 @@ namespace PassionProjectMVP_Diarra.Controllers
                 return RedirectToAction("Error");
             }
 
+            //Get all Classes from the database for dropdown list
             url = "PupilData/GetClasses";
             response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -197,6 +202,7 @@ namespace PassionProjectMVP_Diarra.Controllers
                 return RedirectToAction("Error");
             }
 
+            //Get all locations from the database for dropdown list
             url = "PupilData/GetLocations";
             response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -210,29 +216,23 @@ namespace PassionProjectMVP_Diarra.Controllers
             }
             return View(newPupil);
 
-
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Pupil Pupil = db.Pupils.Find(id);
-            //if (Pupil == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
-            //return View(Pupil);
         }
 
-        // POST: Pupils/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// This method edits the selected pupil 
+        /// <example>POST: Pupils/Edit/1</example>
+        /// </summary>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <param name="Pupil">Selected pupil itself</param>
+        /// <returns>Updates and saves the current pupil to the database</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Pupil Pupil)//currentPupil
         {
 
             Debug.WriteLine(Pupil.firstName + " " +Pupil.lastName+" "+Pupil.classId+" "+Pupil.locId+" "+ Pupil.pId + " " + id);
+            
+            //Update and save the current pupil
             string url = "PupilData/UpdatePupil/" + id;
 
             HttpContent content = new StringContent(jss.Serialize(Pupil));
@@ -249,22 +249,21 @@ namespace PassionProjectMVP_Diarra.Controllers
                 return RedirectToAction("Error");
             }
 
-
-
-            //if (ModelState.IsValid)
-            //{
-            //    db.Entry(Pupil).State = EntityState.Modified;
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-            //ViewBag.classId = new SelectList(db.Pupils, "classId", "className", Pupil.classId);
-            //return View(Pupil);
         }
 
-        // GET: Pupils/Delete/5
+
+        /// <summary>
+        /// This method shows the selected pupil
+        /// <example>GET: Pupils/Delete/1</example>
+        /// <example>GET: Pupils/Delete/3</example>
+        /// </summary>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>Shows the current pupils</returns>
+        // 
 
         public ActionResult Delete(int id)
         {
+            //Get current pupil from the database
             string url = "PupilData/FindPupil/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             //Can catch the status code (200 OK, 301 REDIRECT), etc.
@@ -279,29 +278,27 @@ namespace PassionProjectMVP_Diarra.Controllers
             {
                 return RedirectToAction("Error");
             }
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //Pupil Pupil = db.Pupils.Find(id);
-            //if (Pupil == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(Pupil);
+            
         }
 
-        // POST: Pupils/Delete/5
+        /// <summary>
+        /// This method removes the selected pupil from the database
+        /// <example>POST: Pupils/Delete/2</example>
+        ///  <example>POST: Pupils/Delete/5</example>
+        /// </summary>
+        /// <param name="id">Id of the selected pupil</param>
+        /// <returns>Removes the selected pupil from the database</returns>
+        // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //Delete current pipul from database
             string url = "PupilData/DeletePupil/" + id;
-            //post body is empty
+            
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
-            //Can catch the status code (200 OK, 301 REDIRECT), etc.
-            //Debug.WriteLine(response.StatusCode);
+            
             if (response.IsSuccessStatusCode)
             {
 
@@ -311,10 +308,7 @@ namespace PassionProjectMVP_Diarra.Controllers
             {
                 return RedirectToAction("Error");
             }
-            //Pupil Pupil = db.Pupils.Find(id);
-            //db.Pupils.Remove(Pupil);
-            //db.SaveChanges();
-            //return RedirectToAction("Index");
+           
         }
 
         //protected override void Dispose(bool disposing)

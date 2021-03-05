@@ -15,15 +15,12 @@ namespace PassionProjectMVP_Diarra.Models
 {
     public class LocationsController : Controller
     {
-        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
-
-        // private PassionDataContext db = new PassionDataContext();
-
+       
         /*All the controllers can be automatically generated from:
         Controllers (folder)->Add->Controller-> MVC5 Controller with views, using Entity Framework->
         Add->Select the right Model and database, then give a name to the controller. Keep the 3 fields of Views ticked. 
         */
-        //Http Client is the proper way to connect to a webapi
+        
         //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
 
         private JavaScriptSerializer jss = new JavaScriptSerializer();
@@ -54,7 +51,7 @@ namespace PassionProjectMVP_Diarra.Models
         /// 
         public ActionResult LocationList()
         {
-
+            //getting all the location from the database
             string url = "LocationData/GetLocations";
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -70,23 +67,24 @@ namespace PassionProjectMVP_Diarra.Models
 
 
         /// <summary>
-        /// This method provides details about the selected location which ID is given and its pupils
+        /// This method provides details about the selected location which ID is given and the list of pupils living in this location
         /// <example>GET: Locations/Details/5</example>
         /// <example>GET: Locations/Details/3</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Shows information about the location</returns>
+        /// <param name="id">ID of the selected location</param>
+        /// <returns>Shows information about the location and the list of pupils livind in it</returns>
         // 
         public ActionResult Details(int id)
         {
+            //View model containing location and its pupils
             ShowLocation showLocation = new ShowLocation();
 
+            //Find the current location
             string url = "Locationdata/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 LocationDto SelectedLocation = response.Content.ReadAsAsync<LocationDto>().Result;
                 showLocation.location=SelectedLocation;
             }
@@ -95,6 +93,7 @@ namespace PassionProjectMVP_Diarra.Models
                 return RedirectToAction("Error");
             }
 
+            //List of all the pupils living in the selected location
              url = "LocationData/GetLocationPupils/" + id;
              response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -110,7 +109,10 @@ namespace PassionProjectMVP_Diarra.Models
 
         }
 
-        // GET: Locations/Create
+        /// <summary>
+        /// This methods shows the view to create a location
+        /// </summary>
+        /// <returns>Fields to create a location</returns>
         public ActionResult Create()
         {
             return View();
@@ -121,8 +123,8 @@ namespace PassionProjectMVP_Diarra.Models
         /// This method creates and saves a new location to the database
         /// <example>POST: Locations/Create</example>
         /// </summary>
-        /// <param name="newLocation"></param>
-        /// <returns></returns>
+        /// <param name="newLocation">Location object to be created and added to the database</param>
+        /// <returns>Saves the new location to the database</returns>
         // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -130,7 +132,7 @@ namespace PassionProjectMVP_Diarra.Models
         [ValidateAntiForgeryToken]
         public ActionResult Create(Location newLocation)
         {
-
+            //Add the new location to the database
             string url = "LocationData/AddLocation";
             HttpContent content = new StringContent(jss.Serialize(newLocation));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -138,7 +140,6 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-                //return RedirectToAction("Details", new { id = (int)newLocation.locId });
                 return RedirectToAction("LocationList");
             }
             else
@@ -153,11 +154,12 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>GET: Locations/Edit/5</example>
         /// <example>GET: Locations/Edit/1</example>
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID of the selected location</param>
         /// <returns>Fields of the location to edit</returns>
         // 
         public ActionResult Edit(int id)
         {
+            //Find the selected location from the database
             string url = "LocationData/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -177,9 +179,9 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>POST: Locations/Edit/5</example>
         /// <example>POST: Locations/Edit/3</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="currentLocation"></param>
-        /// <returns></returns>
+        /// <param name="id"> ID of the selected location</param>
+        /// <param name="currentLocation">Selected location objet itself</param>
+        /// <returns>Updates and saves the location object to the database</returns>
         // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -187,7 +189,7 @@ namespace PassionProjectMVP_Diarra.Models
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Location currentLocation)
         {
-
+            //Updating and saving the current location
             string url = "LocationData/UpdateLocation/" + id;
 
             HttpContent content = new StringContent(jss.Serialize(currentLocation));
@@ -211,18 +213,18 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>GET: Locations/Delete/5</example>
         /// <example>GET: Locations/Delete/5</example>
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID of the selected location</param>
         /// <returns> Shows the selected location</returns>
         // 
 
         public ActionResult Delete(int id)
         {
+            //Getting the current location from the database
             string url = "LocationData/FindLocation/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 Location SelectedLocation = response.Content.ReadAsAsync<Location>().Result;
                 return View(SelectedLocation);
             }
@@ -239,14 +241,15 @@ namespace PassionProjectMVP_Diarra.Models
         ///  <example>POST: Locations/Delete/2 </example>
         /// </summary>
         /// <param name="id">Id of the selected location</param>
-        /// <returns></returns>
+        /// <returns>Removes the selected location from the database</returns>
         // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            //Removing the location from the database
             string url = "LocationData/DeleteLocation/" + id;
-            //post body is empty
+            
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
             

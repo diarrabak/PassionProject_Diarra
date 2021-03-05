@@ -45,7 +45,7 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
         /// <summary>
-        /// This method return the classe list to view
+        /// This method returns the Classe list to view
         /// <example>Classes/ClasseList</example>
         /// </summary>
         /// <returns>Classe list</returns>
@@ -66,23 +66,24 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
         /// <summary>
-        /// This method gives details about the selected class element. It shows all the pupils and modules linked to the class.
+        /// This method gives details about the selected Classe object. It shows all the pupils and modules linked to that Classe.
         /// <example>Classes/Details/5</example>
         /// <example>Classes/Details/2</example>
         /// </summary>
-        /// <param name="id">The ID of the selected class</param>
-        /// <returns>Class details with pupils and modules</returns>
+        /// <param name="id">The ID of the selected Classed object</param>
+        /// <returns>Classe object details with pupils and modules</returns>
         /// 
         public ActionResult Details(int id)
         {
-            
+            //Model used to combine a Classe object and its pupils and modules
             ShowClasse ViewModel = new ShowClasse();
+
+            //Get the current Classe object
             string url = "ClasseData/FindClasse/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             
             if (response.IsSuccessStatusCode)
             {
-                //Put data into classe data transfer object
                 ClasseDto SelectedClasse = response.Content.ReadAsAsync < ClasseDto>().Result;
                 ViewModel.classe = SelectedClasse;
             }
@@ -91,6 +92,7 @@ namespace PassionProjectMVP_Diarra.Models
                 return RedirectToAction("Error");
             }
 
+            //Get the mudules which are linked to the current Classe object
             url = "ClasseData/GetClasseModules/" + id;
             response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
@@ -104,11 +106,11 @@ namespace PassionProjectMVP_Diarra.Models
                 return RedirectToAction("Error");
             }
 
+            //Get all the pupils which are following the current Classe
             url = "ClasseData/GetClassePupils/" + id;
             response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
-                //Put data into Team data transfer object
                 IEnumerable<PupilDto> Selectedpupils = response.Content.ReadAsAsync<IEnumerable<PupilDto>>().Result;
                 ViewModel.allPupils = Selectedpupils;
             }
@@ -121,12 +123,11 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
        /// <summary>
-       /// This methos shows the fields of the class to be created
+       /// This method shows the fields of the Classe object to be created
        /// </summary>
-       /// <returns></returns>
+       /// <returns>The current Classe fields to the view</returns>
         public ActionResult Create()
         {
-            // ViewBag.classId = new SelectList(db.Classes, "classId", "className");
             return View();
         }
 
@@ -134,7 +135,7 @@ namespace PassionProjectMVP_Diarra.Models
         /// This method saves the new classe to the database
         /// <example>POST: Classes/Create</example>
         /// </summary>
-        /// <param name="newClasse"></param>
+        /// <param name="newClasse">The current Classe object to be saved</param>
         /// <returns></returns>
         // 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -143,7 +144,7 @@ namespace PassionProjectMVP_Diarra.Models
         [ValidateAntiForgeryToken]
         public ActionResult Create(Classe newClasse)
         {
-          
+          //Saving the new Classe object to the database
             string url = "ClasseData/AddClasse";
             HttpContent content = new StringContent(jss.Serialize(newClasse));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -151,10 +152,9 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-
-              //  int modid = response.Content.ReadAsAsync<int>().Result;
+                //Shows the details of the new Classe added
                 return RedirectToAction("Details", new { id = newClasse.classId });
-                //return RedirectToAction("ClasseList");
+                
             }
             else
             {
@@ -166,8 +166,8 @@ namespace PassionProjectMVP_Diarra.Models
         /// This method shows the fields of the classe element to edit which ID is provided
         /// <example>GET: Classes/Edit/5 </example>
         /// </summary>
-        /// <param name="id">Id of the selected classe</param>
-        /// <returns>Display the selected classe element</returns>
+        /// <param name="id">Id of the selected Classe object</param>
+        /// <returns>Displays the selected Classe object</returns>
         // 
         public ActionResult Edit(int id)
         {
@@ -175,7 +175,6 @@ namespace PassionProjectMVP_Diarra.Models
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
                 Classe SelectedPlayer = response.Content.ReadAsAsync<Classe>().Result;
                 return View(SelectedPlayer);
             }
@@ -186,13 +185,13 @@ namespace PassionProjectMVP_Diarra.Models
         }
 
         /// <summary>
-        /// This method is used to edit and save the selected classe element
+        /// This method is used to edit and save the selected Classe object
         /// <example>Classes/Edit/5</example>
         /// /// <example>Classes/Edit/1</example>
         /// </summary>
-        /// <param name="id">Id of the classe to be edited</param>
+        /// <param name="id">ID of the Classe object to be edited</param>
         /// <param name="currentClasse"></param>
-        /// <returns></returns>
+        /// <returns>Modifies and Saves the selected Classe to the database</returns>
         // POST: 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -200,7 +199,7 @@ namespace PassionProjectMVP_Diarra.Models
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Classe currentClasse)
         {
-
+            //Update and save the Classe which ID is given
             string url = "ClasseData/UpdateClasse/" + id;
 
             HttpContent content = new StringContent(jss.Serialize(currentClasse));
@@ -221,16 +220,17 @@ namespace PassionProjectMVP_Diarra.Models
 
 
         /// <summary>
-        /// This method shows the information about the classe element before deletion
+        /// This method shows the information about the Classe object before deletion
         /// <example>GET: Classes/Delete/5</example>
         /// <example>GET: Classes/Delete/1</example>
         /// </summary>
-        /// <param name="id">Id of the selected classe</param>
-        /// <returns>Selected classe </returns>
+        /// <param name="id">ID of the selected Classe</param>
+        /// <returns>Show the selected Classe </returns>
         // 
 
         public ActionResult Delete(int id)
         {
+            //Getting the Classe which ID is given
             string url = "ClasseData/FindClasse/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             
@@ -251,16 +251,15 @@ namespace PassionProjectMVP_Diarra.Models
         /// <example>POST: Classes/Delete/5</example>
         /// <example>POST: Classes/Delete/2</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-
-        // 
+        /// <param name="id">ID of the selected Classe object</param>
+        /// <returns>Remove the Classe from the database</returns>
+                // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             string url = "ClasseData/DeleteClasse/" + id;
-            //post body is empty
+            
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
            

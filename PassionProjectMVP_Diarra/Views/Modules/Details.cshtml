@@ -8,52 +8,57 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Module</h4>
+    <h4>@Model.module.moduleName</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.classe.className)
-        </dt>
+    <dl class="dl-horizontal module">
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.classe.className)
+            </dt>
 
-        <dd>
-            
-            @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
+            <dd>
 
-           @*@ @Html.DisplayFor(model => model.classe.className)*@
-        </dd>
+                @Html.ActionLink(temp, "Index", "Classes/Details/" + Model.classe.classId)
 
-        <dt>
-            @Html.DisplayNameFor(model => model.module.moduleName)
-        </dt>
+                @*@ @Html.DisplayFor(model => model.classe.className)*@
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.module.moduleName)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.module.moduleName)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.module.moduleName)
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.module.description)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.module.description)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.module.description)
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.module.delivery)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.module.description)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.module.delivery)
+            </dd>
+        </div>
+        <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.module.fees)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.module.delivery)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.module.delivery)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.module.fees)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.module.fees)
-        </dd>
-
+            <dd>
+                @Html.DisplayFor(model => model.module.fees)
+            </dd>
+        </div>
     </dl>
 </div>
 <p>

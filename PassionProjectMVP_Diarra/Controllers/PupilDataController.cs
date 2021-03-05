@@ -15,38 +15,31 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class PupilDataController : ApiController
     {
-        //This variable is our database access point
+        //Connection to the databse
         private PassionDataContext db = new PassionDataContext();
 
-        //This code is mostly scaffolded from the base models and database context
-        //New > WebAPIController with Entity Framework Read/Write Actions
-        //Choose model "Pupil"
-        //Choose context "Passion Data Context"
-        //Note: The base scaffolded code needs many improvements for a fully
-        //functioning MVP.
-
+       
         /// <summary>
-        /// This method process the list of the pupils and return in form of list
+        /// This method gets the list of all pupils from the database
         /// <example> GET: api/PupilData/GetPupils </example>
         /// </summary>
-        /// <returns> The list of pupils with the first name, last name, classe and location from the database</returns>
+        /// <returns> The list of pupils, their location  and Classe they belong to from the database</returns>
 
         [ResponseType(typeof(IEnumerable<ShowPupil>))]
-        //[ResponseType(typeof(IEnumerable<PupilDto>))]
         public IHttpActionResult GetPupils()
         {
             
-            //return (IHttpActionResult)db.Pupils.ToList();
+            //List of the pupils from the database
             List<Pupil> Pupils = db.Pupils.ToList();
 
+            //Data transfer object to show information about the pupil
             List<ShowPupil> PupilDtos = new List<ShowPupil> { };
-            //List<PupilDto> PupilDtos = new List<PupilDto> { };
 
-            //Here you can select the information to be transfered to the  API
             foreach (var Pupil in Pupils)
             {
                 ShowPupil pupil = new ShowPupil();
 
+                //Get the Classe to which the Pupil belongs to
                 Classe classe = db.Classes.Where(c => c.Pupils.Any(m => m.pId == Pupil.pId)).FirstOrDefault();
 
                 ClasseDto parentClass = new ClasseDto
@@ -56,7 +49,7 @@ namespace PassionProjectMVP_Diarra.Controllers
                     startDate = classe.startDate,
                     endDate = classe.endDate
                 };
-
+                //Get the location of pupil
                 Location location = db.Locations.Where(l => l.Pupils.Any(m => m.pId == Pupil.pId)).FirstOrDefault();
 
                 LocationDto locationPlace = new LocationDto
@@ -88,19 +81,22 @@ namespace PassionProjectMVP_Diarra.Controllers
             return Ok(PupilDtos);
         }
 
-       /// <summary>
-       /// This method gives the full list of classes
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        /// This method gives the full list of all Classe object
+        /// <example>api/PupilData/GetClasses</example>
+        /// </summary>
+        /// <returns> the list of all Classe objects from the database</returns>
         [ResponseType(typeof(IEnumerable<ClasseDto>))]
         public IHttpActionResult GetClasses()
         {
 
-            //return (IHttpActionResult)db.Classes.ToList();
+            //Get all the Classe objects from the databse
             List<Classe> Classes = db.Classes.ToList();
+
+            //Data transfer model use to display selected information about Classe object
             List<ClasseDto> ClasseDtos = new List<ClasseDto> { };
 
-            //Here you can select the information to be transfered to the  API
+          
             foreach (var Classe in Classes)
             {
                 ClasseDto NewClasse = new ClasseDto
@@ -116,17 +112,16 @@ namespace PassionProjectMVP_Diarra.Controllers
 
         /// <summary>
         /// This methods gives all the locations
+        /// <example>aoi/PupilData/GetLocations</example>
         /// </summary>
-        /// <returns>Location list</returns>
+        /// <returns>All the Location list from database</returns>
         [ResponseType(typeof(IEnumerable<LocationDto>))]
         public IHttpActionResult GetLocations()
         {
-
-            //return (IHttpActionResult)db.Locations.ToList();
+            //Get all location objects from the database
             List<Location> Locations = db.Locations.ToList();
             List<LocationDto> LocationDtos = new List<LocationDto> { };
 
-            //Here you can select the information to be transfered to the  API
             foreach (var Location in Locations)
             {
                 LocationDto NewLocation = new LocationDto
@@ -147,8 +142,8 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <example>GET api/PupilData/FindPupil/2</example>
         /// <example>GET api/PupilData/FindPupil/5</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>The selected pupil which ID is given</returns>
 
         [HttpGet]
         [ResponseType(typeof(PupilDto))]
@@ -174,10 +169,12 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
-        /// This method provides the classe to which the current module belongs
+        /// This method provides the Classe to which the current module belongs
+        /// <example>api/PupilData/GetPupilClasse/1</example>
+        /// <example>api/PupilData/GetPupilClasse/3</example>
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">ID of the selected pupil</param>
+        /// <returns>The Classe to which current pupil belongs</returns>
 
         [ResponseType(typeof(ClasseDto))]
         public IHttpActionResult GetPupilClasse(int id)
@@ -206,10 +203,12 @@ namespace PassionProjectMVP_Diarra.Controllers
 
         /// <summary>
         /// This method gives the location of the current pupil
+        /// <example>api/PupilData/GetPupilLocation/1</example>
+        /// <example>api/PupilData/GetPupilLocation/4</example>
         /// </summary>
-        /// <param name="id">Id of the pupil</param>
-        /// <returns>Pupil's location</returns>
-        [ResponseType(typeof(ClasseDto))]
+        /// <param name="id">Id of the selected pupil</param>
+        /// <returns>Current pupil location</returns>
+        [ResponseType(typeof(LocationDto))]
         public IHttpActionResult GetPupilLocation(int id)
         {
 
@@ -240,9 +239,9 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <example>api/PupilData/UpdatePupil/1</example>
         /// <example>api/PupilData/UpdatePupil/2</example>
         /// </summary>
-        /// <param name="id">The ID of the pupil</param>
-        /// <param name="pupil"></param>
-        /// <returns></returns>
+        /// <param name="id">The ID of the current pupil</param>
+        /// <param name="pupil">current pupil to be updated</param>
+        /// <returns>Updates and saves current pupil to the database</returns>
         // PUT: 
         [HttpPost]
         [ResponseType(typeof(void))]
@@ -283,7 +282,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// This method permits to add a new pupil to the database
         /// <example>POST: api/PupilData/AddPupil</example>
         /// </summary>
-        /// <param name="pupil"></param>
+        /// <param name="pupil">new pupil to be added to the database</param>
         /// <returns> It adds a new pupil to the database</returns>
         
         [HttpPost]
@@ -307,7 +306,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <example>api/PupilData/DeletePupil/3</example>
         /// </summary>
         /// <param name="id">ID of the pupil</param>
-        /// <returns></returns>
+        /// <returns>Removes the selected pupil from the database</returns>
 
         [HttpPost]
         [ResponseType(typeof(Pupil))]

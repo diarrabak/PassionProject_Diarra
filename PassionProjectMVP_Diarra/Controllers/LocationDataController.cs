@@ -14,33 +14,24 @@ namespace PassionProjectMVP_Diarra.Controllers
 {
     public class LocationDataController : ApiController
     {
-        //NB: This code is inspired from the Christine Bittle course, professor at Humber college.
-
-        //This variable is our database access point
+       
+        //Connection to the database containing Classes, Modules, Locations and Pupils
         private PassionDataContext db = new PassionDataContext();
 
-        //This code is mostly scaffolded from the base models and database context
-        //New > WebAPIController with Entity Framework Read/Write Actions
-        //Choose model "Player"
-        //Choose context "Passion Data Context"
-        //Note: The base scaffolded code needs many improvements for a fully
-        //functioning MVP.
-
         /// <summary>
-        /// This method process the list of the Locations and return in form of list
+        /// This method gets the list of all the locations from the database
         /// <example> GET: api/LocationData/GetLocations </example>
         /// </summary>
-        /// <returns> The list of Locations with the first name, last name, classe and location from the database</returns>
+        /// <returns> The list of Locations from the database</returns>
 
         [ResponseType(typeof(IEnumerable<LocationDto>))]
         public IHttpActionResult GetLocations()
         {
-
-            //return (IHttpActionResult)db.Locations.ToList();
+            //List of all the locations in the database
             List<Location> Locations = db.Locations.ToList();
-            List<LocationDto> LocationDtos = new List<LocationDto> { };
 
-            //Here you can select the information to be transfered to the  API
+            //Data transfer object used to display information of location object
+            List<LocationDto> LocationDtos = new List<LocationDto> { };
             foreach (var Location in Locations)
             {
                 LocationDto NewLocation = new LocationDto
@@ -57,17 +48,17 @@ namespace PassionProjectMVP_Diarra.Controllers
         }
 
         /// <summary>
-        /// This method gets all the pupils of module
+        /// This method gets the list of all the pupils living in the selected location
         /// </summary>
-        /// <param name="id">ID of the module</param>
-        /// <returns>Pupil list</returns>
+        /// <param name="id">ID of the location</param>
+        /// <returns>Pupil list of the current location</returns>
         [ResponseType(typeof(IEnumerable<PupilDto>))]
         public IHttpActionResult GetLocationPupils(int id)
         {
+            //List of pupil which location ID is the same as the selected location ID
             List<Pupil> pupils = db.Pupils.Where(p => p.locId == id).ToList();
             List<PupilDto> PupilDtos = new List<PupilDto> { };
 
-            //Here you can choose which information is exposed to the API
             foreach (var pupil in pupils)
             {
                 PupilDto NewPupil = new PupilDto
@@ -87,8 +78,8 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <example>GET: api/api/LocationData/FindLocation/1</example>
         /// <example>GET: api/api/LocationData/FindLocation/2</example>
         /// </summary>
-        /// <param name="id"> The parameter being the ID of the Location</param>
-        /// <returns> This method returns the Location which id is given</returns>
+        /// <param name="id"> ID of the selected Location</param>
+        /// <returns> This method returns the Location which ID is given</returns>
         // 
         [HttpGet]
         [ResponseType(typeof(LocationDto))]
@@ -118,7 +109,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// </summary>
         /// <param name="id">The ID of the Location</param>
         /// <param name="Location"></param>
-        /// <returns></returns>
+        /// <returns>It updates and adds the selected Location to the database</returns>
         // PUT: 
         [HttpPost]
         [ResponseType(typeof(void))]
@@ -159,7 +150,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// This method permits to add a new Location to the database
         /// <example>POST: api/LocationData/AddLocation</example>
         /// </summary>
-        /// <param name="Location"></param>
+        /// <param name="Location">Location object to be updated</param>
         /// <returns> It adds a new Location to the database</returns>
 
         [HttpPost]
@@ -183,7 +174,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <example>api/LocationData/DeleteLocation/3</example>
         /// </summary>
         /// <param name="id">ID of the Location</param>
-        /// <returns></returns>
+        /// <returns>Removes the selected location from the database</returns>
 
         [HttpPost]
         [ResponseType(typeof(Location))]

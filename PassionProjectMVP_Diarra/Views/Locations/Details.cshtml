@@ -4,57 +4,59 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Details about @Model.location.country</h2>
 
-<div>
+<div class="row">
     <h4>Location</h4>
-    <hr />
-    <table class="table">
-        <tr>
-            <th colspan="2">
-                @Html.DisplayNameFor(model => model.location.city)
-            </th>
+    <div class="col-sm-12 col-md-6">
+        <dl class="dl-horizontal">
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.location.city)
+                </dt>
+                <dd colspan="2">
+                    @Html.DisplayFor(model => model.location.city)
+                </dd>
+            </div>
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.location.country)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.location.country)
+                </dd>
+            </div>
+            <div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.location.incomeRange)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.location.incomeRange)
+                </dd>
+            </div>
+        </dl>
+        </div>
+        <div class="col-sm-12 col-md-6">
+                    <ul>
+                        List of pupil living in @Model.location.country
 
-            <th>
-                @Html.DisplayNameFor(model => model.location.country)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.location.incomeRange)
-            </th>
-        </tr>
-        <tr>
-            <td colspan="2">
-                @Html.DisplayFor(model => model.location.city)
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.location.country)
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.location.incomeRange)
-            </td>
+                        @foreach (var pupil in Model.pupils)
+                        {
+                            var temp = @Html.DisplayFor(modelItem => pupil.firstName).ToHtmlString();
+                            var temp1 = @Html.DisplayFor(modelItem => pupil.lastName).ToHtmlString();
+                            var fullName = temp + " " + temp1;
+                            <li>
+                                @Html.ActionLink(fullName, "Index", "Pupils/Details/" + pupil.pId)
+                            </li>
+                        }
+                    </ul>
 
-        </tr>
-    </table>
-
-    <ul>
-        List of pupil living in @Model.location.country
-
-        @foreach (var pupil in Model.pupils)
-        {
-            var temp = @Html.DisplayFor(modelItem => pupil.firstName).ToHtmlString();
-            var temp1 = @Html.DisplayFor(modelItem => pupil.lastName).ToHtmlString();
-            var fullName=temp+" " +temp1;
-            <li>
-                @Html.ActionLink(fullName, "Index", "Pupils/Details/" + pupil.pId)
-            </li>
-        }
-    </ul>
-
-
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.location.locId }) |
-    @Html.ActionLink("Back to Location List", "LocationList")
-</p>
+        </div>
+    </div>
+               
+                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.location.locId }) |
+                    @Html.ActionLink("Back to Location List", "LocationList")
+                </p>
 
 
