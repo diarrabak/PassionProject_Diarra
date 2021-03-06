@@ -4,15 +4,13 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<h4>Add a pupil</h4>
 
 
-@using (Html.BeginForm()) 
-{
+<form action="/Pupils/Create" method="post" name="createPupil">
     @Html.AntiForgeryToken()
-    
     <div class="form-horizontal">
-        <h4>Pupil</h4>
+
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -46,7 +44,7 @@
                     @foreach (var classe in Model.allClasses)
                     {
                         <option value="@classe.classId">@classe.className</option>
-}
+                    }
                 </select>
             </div>
         </div>
@@ -58,23 +56,23 @@
                     @foreach (var location in Model.allLocations)
                     {
                         <option value="@location.locId">@location.country</option>
-}
+                    }
                 </select>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" onclick="verifyPupil();" class="btn btn-default" />
             </div>
         </div>
     </div>
-}
+</form>
 
-<div>
-    @Html.ActionLink("Back to Pupil List", "PupilList")
-</div>
+    <div>
+        @Html.ActionLink("Back to Pupil List", "PupilList")
+    </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

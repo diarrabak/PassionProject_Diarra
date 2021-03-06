@@ -6,7 +6,8 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    <!--Some JS Validations-->
+    <script src="~/Scripts/formValidation.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -32,7 +33,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
+        <footer class="navbar navbar-inverse navbar-fixed-bottom">
             <p>&copy; @DateTime.Now.Year - ASP.NET Passion Project - Diarra</p>
         </footer>
     </div>

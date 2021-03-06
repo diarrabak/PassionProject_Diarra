@@ -4,12 +4,10 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h4>Delete @Model.className ?</h4>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Classe</h4>
-    <hr />
+    
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.className)
@@ -21,12 +19,11 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    <form action="/Classes/Delete/@Model.classId" name="delete" method="post">
         @Html.AntiForgeryToken()
-
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" onclick="confirmation();" class="btn btn-default" /> |
             @Html.ActionLink("Back to Classe List", "ClasseList")
         </div>
-    }
+    </form>
 </div>

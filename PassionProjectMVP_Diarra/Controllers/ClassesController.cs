@@ -152,8 +152,8 @@ namespace PassionProjectMVP_Diarra.Models
 
             if (response.IsSuccessStatusCode)
             {
-                //Shows the details of the new Classe added
-                return RedirectToAction("Details", new { id = newClasse.classId });
+                //Go back to classes list
+                return RedirectToAction("ClasseList");
                 
             }
             else

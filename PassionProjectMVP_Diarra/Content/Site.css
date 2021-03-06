@@ -42,14 +42,30 @@ ul {
 tr td, tr th{
     text-align: center;
 }
-.dl-horizontal div, h4 {
+.dl-horizontal div {
     margin: 2em 0;
     
 }
 h4 {
+    margin-top:2em;
     text-align:center;
     border-bottom:double red;
+    font-size:2em;
 }
 .pupil div, .module div {
     margin-left: 35%;
 }
+h2 {
+    text-align:center;
+}
+footer {
+    text-align:center;
+    color:white;
+}
+    footer p {
+        margin-top:1.2em;
+    }
+    body{
+  
+        font-size:1.5em;
+    }
