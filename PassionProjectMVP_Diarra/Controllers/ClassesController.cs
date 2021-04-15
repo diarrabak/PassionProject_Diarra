@@ -122,10 +122,11 @@ namespace PassionProjectMVP_Diarra.Models
             return View(ViewModel);
         }
 
-       /// <summary>
-       /// This method shows the fields of the Classe object to be created
-       /// </summary>
-       /// <returns>The current Classe fields to the view</returns>
+        /// <summary>
+        /// This method shows the fields of the Classe object to be created
+        /// </summary>
+        /// <returns>The current Classe fields to the view</returns>
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -142,6 +143,7 @@ namespace PassionProjectMVP_Diarra.Models
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(Classe newClasse)
         {
           //Saving the new Classe object to the database
@@ -169,6 +171,7 @@ namespace PassionProjectMVP_Diarra.Models
         /// <param name="id">Id of the selected Classe object</param>
         /// <returns>Displays the selected Classe object</returns>
         // 
+        [Authorize(Roles = "User")]
         public ActionResult Edit(int id)
         {
             string url = "ClasseData/FindClasse/" + id;
@@ -197,6 +200,7 @@ namespace PassionProjectMVP_Diarra.Models
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
         public ActionResult Edit(int id, Classe currentClasse)
         {
             //Update and save the Classe which ID is given
@@ -227,7 +231,7 @@ namespace PassionProjectMVP_Diarra.Models
         /// <param name="id">ID of the selected Classe</param>
         /// <returns>Show the selected Classe </returns>
         // 
-
+        [Authorize(Roles = "User")]
         public ActionResult Delete(int id)
         {
             //Getting the Classe which ID is given
@@ -256,6 +260,7 @@ namespace PassionProjectMVP_Diarra.Models
                 // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
         public ActionResult DeleteConfirmed(int id)
         {
             string url = "ClasseData/DeleteClasse/" + id;

@@ -170,7 +170,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// </summary>
         /// <param name="id">ID of the selected pupil</param>
         /// <returns>Shows the selected pupil in the view</returns>
-
+        [Authorize(Roles = "Admin, User")]
         public ActionResult Edit(int id)
         {
             EditPupil newPupil = new EditPupil();
@@ -227,6 +227,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <returns>Updates and saves the current pupil to the database</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, User")]
         public ActionResult Edit(int id, Pupil Pupil)//currentPupil
         {
 
@@ -260,7 +261,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         /// <param name="id">ID of the selected pupil</param>
         /// <returns>Shows the current pupils</returns>
         // 
-
+        [Authorize(Roles = "Admin, User")]
         public ActionResult Delete(int id)
         {
             //Get current pupil from the database
@@ -291,6 +292,7 @@ namespace PassionProjectMVP_Diarra.Controllers
         // 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, User")]
         public ActionResult DeleteConfirmed(int id)
         {
             //Delete current pipul from database
